@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Daily Dev Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">Daily Dev Dashboard</p>
+          <h1 id="page-title">Turn small daily work into visible progress.</h1>
+          <p class="hero-copy">
+            Track today's coding focus, keep a tiny backlog, and write one learning note after each session.
+          </p>
+        </div>
+        <div class="date-panel" aria-label="Today">
+          <span id="weekday">Today</span>
+          <strong id="dateLabel">Ready</strong>
+        </div>
+      </section>
+
+      <section class="dashboard" aria-label="Dashboard">
+        <article class="panel focus-panel">
+          <div class="panel-header">
+            <div>
+              <p class="section-kicker">Today</p>
+              <h2>Focus session</h2>
+            </div>
+            <button class="icon-button" id="clearFocus" type="button" aria-label="Clear today's focus" title="Clear today's focus">
+              Clear
+            </button>
+          </div>
+          <label for="focusInput">What will you ship today?</label>
+          <textarea id="focusInput" rows="4" placeholder="Example: Add keyboard support to task cards"></textarea>
+          <div class="focus-actions">
+            <button id="saveFocus" type="button">Save focus</button>
+            <p id="focusStatus" role="status" aria-live="polite"></p>
+          </div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-header">
+            <div>
+              <p class="section-kicker">Backlog</p>
+              <h2>Small tasks</h2>
+            </div>
+            <span class="count" id="taskCount">0</span>
+          </div>
+          <form class="task-form" id="taskForm">
+            <label class="sr-only" for="taskInput">Add a small task</label>
+            <input id="taskInput" type="text" placeholder="Add one small improvement">
+            <button type="submit">Add</button>
+          </form>
+          <ul class="task-list" id="taskList"></ul>
+        </article>
+
+        <article class="panel notes-panel">
+          <div class="panel-header">
+            <div>
+              <p class="section-kicker">Reflection</p>
+              <h2>Learning notes</h2>
+            </div>
+          </div>
+          <form id="noteForm">
+            <label for="noteInput">What did you learn or change?</label>
+            <textarea id="noteInput" rows="5" placeholder="Example: Used aria-live for save feedback"></textarea>
+            <button type="submit">Add note</button>
+          </form>
+          <ol class="notes" id="notesList"></ol>
+        </article>
+
+        <aside class="panel roadmap-panel">
+          <p class="section-kicker">Next steps</p>
+          <h2>30-day growth path</h2>
+          <ul class="roadmap">
+            <li>Week 1: Improve layout, forms, and accessibility.</li>
+            <li>Week 2: Add filters, search, and task categories.</li>
+            <li>Week 3: Add charts, streaks, and import/export.</li>
+            <li>Week 4: Polish, deploy, and write a strong README.</li>
+          </ul>
+        </aside>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
