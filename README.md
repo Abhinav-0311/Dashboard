@@ -7,6 +7,7 @@ The first version includes:
 - A daily focus prompt
 - A small task backlog
 - Learning notes saved in local storage
+- Empty states for cleared task and note lists
 - A 30-day improvement roadmap
 
 ## Run locally

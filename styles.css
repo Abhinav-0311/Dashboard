@@ -221,6 +221,12 @@ h2 {
   padding: 12px;
 }
 
+.task-list .empty-state,
+.notes .empty-state {
+  color: var(--muted);
+  font-style: italic;
+}
+
 .task-list li {
   display: flex;
   gap: 10px;

@@ -58,6 +58,14 @@ function renderTasks() {
   taskList.innerHTML = "";
   taskCount.textContent = state.tasks.length;
 
+  if (state.tasks.length === 0) {
+    const empty = document.createElement("li");
+    empty.className = "empty-state";
+    empty.textContent = "Backlog clear. Add the next small improvement when you are ready.";
+    taskList.append(empty);
+    return;
+  }
+
   state.tasks.forEach((task, index) => {
     const item = document.createElement("li");
     const label = document.createElement("span");
@@ -66,6 +74,7 @@ function renderTasks() {
     label.textContent = task;
     remove.type = "button";
     remove.textContent = "Done";
+    remove.setAttribute("aria-label", `Mark task done: ${task}`);
     remove.addEventListener("click", () => {
       state.tasks.splice(index, 1);
       saveState();
@@ -79,6 +88,14 @@ function renderTasks() {
 
 function renderNotes() {
   notesList.innerHTML = "";
+
+  if (state.notes.length === 0) {
+    const empty = document.createElement("li");
+    empty.className = "empty-state";
+    empty.textContent = "No learning notes yet. Capture one sentence after today's session.";
+    notesList.append(empty);
+    return;
+  }
 
   state.notes.slice().reverse().forEach((note) => {
     const item = document.createElement("li");
