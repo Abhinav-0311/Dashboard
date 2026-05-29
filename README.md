@@ -4,7 +4,7 @@ A small vanilla HTML, CSS, and JavaScript app for turning daily coding sessions 
 
 The first version includes:
 
-- A daily focus prompt
+- A daily focus prompt that resets each new day
 - A small task backlog
 - Learning notes saved in local storage
 - Empty states for cleared task and note lists

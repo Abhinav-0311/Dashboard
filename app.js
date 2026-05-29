@@ -1,7 +1,10 @@
 const storageKey = "daily-dev-dashboard";
 
 const defaultState = {
-  focus: "",
+  focus: {
+    text: "",
+    savedOn: ""
+  },
   tasks: [
     "Add keyboard shortcuts for saving focus",
     "Create a completed tasks view",
@@ -25,6 +28,7 @@ const taskCount = document.querySelector("#taskCount");
 const noteForm = document.querySelector("#noteForm");
 const noteInput = document.querySelector("#noteInput");
 const notesList = document.querySelector("#notesList");
+const todayKey = new Date().toISOString().slice(0, 10);
 
 function loadState() {
   const saved = localStorage.getItem(storageKey);
@@ -34,10 +38,39 @@ function loadState() {
   }
 
   try {
-    return { ...defaultState, ...JSON.parse(saved) };
+    const parsed = JSON.parse(saved);
+    const nextState = {
+      ...defaultState,
+      ...parsed,
+      focus: normalizeFocus(parsed.focus)
+    };
+
+    if (nextState.focus.savedOn !== todayKey) {
+      nextState.focus = { ...defaultState.focus };
+    }
+
+    return nextState;
   } catch {
     return { ...defaultState };
   }
+}
+
+function normalizeFocus(focus) {
+  if (typeof focus === "string") {
+    return {
+      text: focus,
+      savedOn: todayKey
+    };
+  }
+
+  if (!focus || typeof focus !== "object") {
+    return { ...defaultState.focus };
+  }
+
+  return {
+    text: typeof focus.text === "string" ? focus.text : "",
+    savedOn: typeof focus.savedOn === "string" ? focus.savedOn : ""
+  };
 }
 
 function saveState() {
@@ -117,13 +150,20 @@ function renderNotes() {
 }
 
 saveFocus.addEventListener("click", () => {
-  state.focus = focusInput.value.trim();
+  const nextFocus = focusInput.value.trim();
+
+  state.focus = nextFocus
+    ? {
+        text: nextFocus,
+        savedOn: todayKey
+      }
+    : { ...defaultState.focus };
   saveState();
-  focusStatus.textContent = state.focus ? "Saved for today." : "Add a focus before saving.";
+  focusStatus.textContent = nextFocus ? "Saved for today." : "Add a focus before saving.";
 });
 
 clearFocus.addEventListener("click", () => {
-  state.focus = "";
+  state.focus = { ...defaultState.focus };
   focusInput.value = "";
   saveState();
   focusStatus.textContent = "Focus cleared.";
@@ -161,6 +201,6 @@ noteForm.addEventListener("submit", (event) => {
 });
 
 setDate();
-focusInput.value = state.focus;
+focusInput.value = state.focus.text;
 renderTasks();
 renderNotes();
