@@ -30,19 +30,29 @@ const noteInput = document.querySelector("#noteInput");
 const notesList = document.querySelector("#notesList");
 const todayKey = new Date().toISOString().slice(0, 10);
 
+function createDefaultState() {
+  return {
+    focus: { ...defaultState.focus },
+    tasks: [...defaultState.tasks],
+    notes: [...defaultState.notes]
+  };
+}
+
 function loadState() {
   const saved = localStorage.getItem(storageKey);
 
   if (!saved) {
-    return { ...defaultState };
+    return createDefaultState();
   }
 
   try {
     const parsed = JSON.parse(saved);
     const nextState = {
-      ...defaultState,
+      ...createDefaultState(),
       ...parsed,
-      focus: normalizeFocus(parsed.focus)
+      focus: normalizeFocus(parsed.focus),
+      tasks: normalizeTasks(parsed.tasks),
+      notes: normalizeNotes(parsed.notes)
     };
 
     if (nextState.focus.savedOn !== todayKey) {
@@ -51,7 +61,7 @@ function loadState() {
 
     return nextState;
   } catch {
-    return { ...defaultState };
+    return createDefaultState();
   }
 }
 
@@ -71,6 +81,30 @@ function normalizeFocus(focus) {
     text: typeof focus.text === "string" ? focus.text : "",
     savedOn: typeof focus.savedOn === "string" ? focus.savedOn : ""
   };
+}
+
+function normalizeTasks(tasks) {
+  if (!Array.isArray(tasks)) {
+    return [...defaultState.tasks];
+  }
+
+  return tasks.filter((task) => typeof task === "string" && task.trim().length > 0);
+}
+
+function normalizeNotes(notes) {
+  if (!Array.isArray(notes)) {
+    return [];
+  }
+
+  return notes.filter((note) => {
+    return (
+      note &&
+      typeof note === "object" &&
+      typeof note.text === "string" &&
+      note.text.trim().length > 0 &&
+      typeof note.createdAt === "string"
+    );
+  });
 }
 
 function saveState() {
