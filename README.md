@@ -16,6 +16,14 @@ Open `index.html` in your browser.
 
 No build step or dependencies are required.
 
+## Validate changes
+
+Run the lightweight JavaScript syntax check before committing:
+
+```bash
+npm run validate
+```
+
 ## Daily contribution ideas
 
 Use this repo for small, real improvements:

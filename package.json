@@ -1,0 +1,8 @@
+{
+  "name": "daily-dev-dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "validate": "node --check app.js"
+  }
+}
