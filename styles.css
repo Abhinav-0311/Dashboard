@@ -67,6 +67,12 @@ label {
   margin-bottom: 8px;
 }
 
+.field-hint {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
 .shell {
   width: min(1120px, calc(100% - 32px));
   margin: 0 auto;

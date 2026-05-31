@@ -111,6 +111,19 @@ function saveState() {
   localStorage.setItem(storageKey, JSON.stringify(state));
 }
 
+function saveFocusText() {
+  const nextFocus = focusInput.value.trim();
+
+  state.focus = nextFocus
+    ? {
+        text: nextFocus,
+        savedOn: todayKey
+      }
+    : { ...defaultState.focus };
+  saveState();
+  focusStatus.textContent = nextFocus ? "Saved for today." : "Add a focus before saving.";
+}
+
 function setDate() {
   const today = new Date();
   weekday.textContent = today.toLocaleDateString(undefined, { weekday: "long" });
@@ -183,17 +196,14 @@ function renderNotes() {
   });
 }
 
-saveFocus.addEventListener("click", () => {
-  const nextFocus = focusInput.value.trim();
+saveFocus.addEventListener("click", saveFocusText);
 
-  state.focus = nextFocus
-    ? {
-        text: nextFocus,
-        savedOn: todayKey
-      }
-    : { ...defaultState.focus };
-  saveState();
-  focusStatus.textContent = nextFocus ? "Saved for today." : "Add a focus before saving.";
+focusInput.addEventListener("keydown", (event) => {
+  if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+    event.preventDefault();
+    saveFocusText();
+    focusStatus.textContent = "Saved for today with keyboard shortcut.";
+  }
 });
 
 clearFocus.addEventListener("click", () => {
