@@ -268,12 +268,30 @@ h2 {
   padding-left: 22px;
 }
 
+.note-meta {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .notes time {
   display: block;
   color: var(--muted);
   font-size: 0.82rem;
   font-weight: 700;
   margin-bottom: 6px;
+}
+
+.note-remove {
+  min-height: 32px;
+  background: #edf2ef;
+  color: var(--ink);
+  padding: 0 10px;
+}
+
+.notes p {
+  margin-bottom: 0;
 }
 
 .roadmap-panel {
@@ -322,7 +340,13 @@ h2 {
   }
 
   .focus-actions button,
-  .task-form button {
+  .task-form button,
+  .note-remove {
     width: 100%;
+  }
+
+  .note-meta {
+    align-items: stretch;
+    flex-direction: column;
   }
 }

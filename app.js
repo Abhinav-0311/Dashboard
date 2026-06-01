@@ -177,10 +177,13 @@ function renderNotes() {
     return;
   }
 
-  state.notes.slice().reverse().forEach((note) => {
+  state.notes.slice().reverse().forEach((note, reverseIndex) => {
+    const noteIndex = state.notes.length - 1 - reverseIndex;
     const item = document.createElement("li");
+    const header = document.createElement("div");
     const time = document.createElement("time");
     const body = document.createElement("p");
+    const remove = document.createElement("button");
 
     time.dateTime = note.createdAt;
     time.textContent = new Date(note.createdAt).toLocaleString(undefined, {
@@ -190,8 +193,19 @@ function renderNotes() {
       minute: "2-digit"
     });
     body.textContent = note.text;
+    remove.type = "button";
+    remove.className = "note-remove";
+    remove.textContent = "Delete";
+    remove.setAttribute("aria-label", `Delete note from ${time.textContent}`);
+    remove.addEventListener("click", () => {
+      state.notes.splice(noteIndex, 1);
+      saveState();
+      renderNotes();
+    });
 
-    item.append(time, body);
+    header.className = "note-meta";
+    header.append(time, remove);
+    item.append(header, body);
     notesList.append(item);
   });
 }
