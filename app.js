@@ -28,7 +28,7 @@ const taskCount = document.querySelector("#taskCount");
 const noteForm = document.querySelector("#noteForm");
 const noteInput = document.querySelector("#noteInput");
 const notesList = document.querySelector("#notesList");
-const todayKey = new Date().toISOString().slice(0, 10);
+const todayKey = getLocalDateKey(new Date());
 
 function createDefaultState() {
   return {
@@ -36,6 +36,14 @@ function createDefaultState() {
     tasks: [...defaultState.tasks],
     notes: [...defaultState.notes]
   };
+}
+
+function getLocalDateKey(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
 }
 
 function loadState() {
