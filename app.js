@@ -13,6 +13,7 @@ const defaultState = {
   notes: []
 };
 
+const todayKey = getLocalDateKey(new Date());
 const state = loadState();
 
 const weekday = document.querySelector("#weekday");
@@ -28,7 +29,6 @@ const taskCount = document.querySelector("#taskCount");
 const noteForm = document.querySelector("#noteForm");
 const noteInput = document.querySelector("#noteInput");
 const notesList = document.querySelector("#notesList");
-const todayKey = getLocalDateKey(new Date());
 
 function createDefaultState() {
   return {
