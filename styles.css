@@ -45,6 +45,12 @@ button:hover {
   background: var(--accent-strong);
 }
 
+button:disabled {
+  background: #c7d0d8;
+  color: #f7f9fb;
+  cursor: not-allowed;
+}
+
 input,
 textarea {
   width: 100%;
@@ -251,6 +257,13 @@ h2 {
   background: #edf2ef;
   color: var(--ink);
   padding: 0 10px;
+}
+
+.task-list button:disabled,
+.note-remove:disabled,
+.icon-button:disabled {
+  background: #edf2ef;
+  color: var(--muted);
 }
 
 .notes-panel form {

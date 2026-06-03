@@ -24,10 +24,12 @@ const saveFocus = document.querySelector("#saveFocus");
 const clearFocus = document.querySelector("#clearFocus");
 const taskForm = document.querySelector("#taskForm");
 const taskInput = document.querySelector("#taskInput");
+const addTask = document.querySelector("#addTask");
 const taskList = document.querySelector("#taskList");
 const taskCount = document.querySelector("#taskCount");
 const noteForm = document.querySelector("#noteForm");
 const noteInput = document.querySelector("#noteInput");
+const addNote = document.querySelector("#addNote");
 const notesList = document.querySelector("#notesList");
 
 function createDefaultState() {
@@ -129,7 +131,19 @@ function saveFocusText() {
       }
     : { ...defaultState.focus };
   saveState();
+  updateActionStates();
   focusStatus.textContent = nextFocus ? "Saved for today." : "Add a focus before saving.";
+}
+
+function updateActionStates() {
+  const focusText = focusInput.value.trim();
+  const taskText = taskInput.value.trim();
+  const noteText = noteInput.value.trim();
+
+  saveFocus.disabled = focusText.length === 0;
+  clearFocus.disabled = state.focus.text.length === 0 && focusText.length === 0;
+  addTask.disabled = taskText.length === 0;
+  addNote.disabled = noteText.length === 0;
 }
 
 function setDate() {
@@ -228,10 +242,15 @@ focusInput.addEventListener("keydown", (event) => {
   }
 });
 
+focusInput.addEventListener("input", updateActionStates);
+taskInput.addEventListener("input", updateActionStates);
+noteInput.addEventListener("input", updateActionStates);
+
 clearFocus.addEventListener("click", () => {
   state.focus = { ...defaultState.focus };
   focusInput.value = "";
   saveState();
+  updateActionStates();
   focusStatus.textContent = "Focus cleared.";
 });
 
@@ -246,6 +265,7 @@ taskForm.addEventListener("submit", (event) => {
   state.tasks.unshift(nextTask);
   taskInput.value = "";
   saveState();
+  updateActionStates();
   renderTasks();
 });
 
@@ -263,10 +283,12 @@ noteForm.addEventListener("submit", (event) => {
   });
   noteInput.value = "";
   saveState();
+  updateActionStates();
   renderNotes();
 });
 
 setDate();
 focusInput.value = state.focus.text;
+updateActionStates();
 renderTasks();
 renderNotes();
