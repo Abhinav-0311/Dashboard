@@ -121,7 +121,7 @@ function saveState() {
   localStorage.setItem(storageKey, JSON.stringify(state));
 }
 
-function saveFocusText() {
+function saveFocusText(savedMessage = "Saved for today.") {
   const nextFocus = focusInput.value.trim();
 
   state.focus = nextFocus
@@ -132,7 +132,7 @@ function saveFocusText() {
     : { ...defaultState.focus };
   saveState();
   updateActionStates();
-  focusStatus.textContent = nextFocus ? "Saved for today." : "Add a focus before saving.";
+  focusStatus.textContent = nextFocus ? savedMessage : "Add a focus before saving.";
 }
 
 function updateActionStates() {
@@ -237,8 +237,7 @@ saveFocus.addEventListener("click", saveFocusText);
 focusInput.addEventListener("keydown", (event) => {
   if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
     event.preventDefault();
-    saveFocusText();
-    focusStatus.textContent = "Saved for today with keyboard shortcut.";
+    saveFocusText("Saved for today with keyboard shortcut.");
   }
 });
 
