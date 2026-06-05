@@ -1,4 +1,5 @@
 const storageKey = "daily-dev-dashboard";
+const draftStorageKey = "daily-dev-dashboard:drafts";
 
 const defaultState = {
   focus: {
@@ -31,6 +32,7 @@ const noteForm = document.querySelector("#noteForm");
 const noteInput = document.querySelector("#noteInput");
 const addNote = document.querySelector("#addNote");
 const notesList = document.querySelector("#notesList");
+const drafts = loadDrafts();
 
 function createDefaultState() {
   return {
@@ -38,6 +40,53 @@ function createDefaultState() {
     tasks: [...defaultState.tasks],
     notes: [...defaultState.notes]
   };
+}
+
+function loadDrafts() {
+  try {
+    const savedDrafts = sessionStorage.getItem(draftStorageKey);
+
+    if (!savedDrafts) {
+      return {};
+    }
+
+    const parsedDrafts = JSON.parse(savedDrafts);
+
+    if (!parsedDrafts || typeof parsedDrafts !== "object") {
+      return {};
+    }
+
+    return parsedDrafts;
+  } catch {
+    return {};
+  }
+}
+
+function saveDraft(field, value) {
+  const nextDrafts = {
+    ...drafts,
+    [field]: value
+  };
+
+  if (!value) {
+    delete nextDrafts[field];
+  }
+
+  Object.keys(drafts).forEach((key) => {
+    delete drafts[key];
+  });
+  Object.assign(drafts, nextDrafts);
+
+  try {
+    if (Object.keys(drafts).length === 0) {
+      sessionStorage.removeItem(draftStorageKey);
+      return;
+    }
+
+    sessionStorage.setItem(draftStorageKey, JSON.stringify(drafts));
+  } catch {
+    // Ignore draft persistence failures and keep the main flows working.
+  }
 }
 
 function getLocalDateKey(date) {
@@ -130,6 +179,7 @@ function saveFocusText(savedMessage = "Saved for today.") {
         savedOn: todayKey
       }
     : { ...defaultState.focus };
+  saveDraft("focus", "");
   saveState();
   updateActionStates();
   focusStatus.textContent = nextFocus ? savedMessage : "Add a focus before saving.";
@@ -241,13 +291,25 @@ focusInput.addEventListener("keydown", (event) => {
   }
 });
 
-focusInput.addEventListener("input", updateActionStates);
-taskInput.addEventListener("input", updateActionStates);
-noteInput.addEventListener("input", updateActionStates);
+focusInput.addEventListener("input", () => {
+  saveDraft("focus", focusInput.value);
+  updateActionStates();
+});
+
+taskInput.addEventListener("input", () => {
+  saveDraft("task", taskInput.value);
+  updateActionStates();
+});
+
+noteInput.addEventListener("input", () => {
+  saveDraft("note", noteInput.value);
+  updateActionStates();
+});
 
 clearFocus.addEventListener("click", () => {
   state.focus = { ...defaultState.focus };
   focusInput.value = "";
+  saveDraft("focus", "");
   saveState();
   updateActionStates();
   focusStatus.textContent = "Focus cleared.";
@@ -263,6 +325,7 @@ taskForm.addEventListener("submit", (event) => {
 
   state.tasks.unshift(nextTask);
   taskInput.value = "";
+  saveDraft("task", "");
   saveState();
   updateActionStates();
   renderTasks();
@@ -281,13 +344,21 @@ noteForm.addEventListener("submit", (event) => {
     createdAt: new Date().toISOString()
   });
   noteInput.value = "";
+  saveDraft("note", "");
   saveState();
   updateActionStates();
   renderNotes();
 });
 
 setDate();
-focusInput.value = state.focus.text;
+focusInput.value = typeof drafts.focus === "string" ? drafts.focus : state.focus.text;
+taskInput.value = typeof drafts.task === "string" ? drafts.task : "";
+noteInput.value = typeof drafts.note === "string" ? drafts.note : "";
+
+if (drafts.focus || drafts.task || drafts.note) {
+  focusStatus.textContent = "Restored unsaved draft text from this tab.";
+}
+
 updateActionStates();
 renderTasks();
 renderNotes();
