@@ -19,6 +19,7 @@ const state = loadState();
 
 const weekday = document.querySelector("#weekday");
 const dateLabel = document.querySelector("#dateLabel");
+const storageBanner = document.querySelector("#storageBanner");
 const focusInput = document.querySelector("#focusInput");
 const focusStatus = document.querySelector("#focusStatus");
 const saveFocus = document.querySelector("#saveFocus");
@@ -98,13 +99,13 @@ function getLocalDateKey(date) {
 }
 
 function loadState() {
-  const saved = localStorage.getItem(storageKey);
-
-  if (!saved) {
-    return createDefaultState();
-  }
-
   try {
+    const saved = localStorage.getItem(storageKey);
+
+    if (!saved) {
+      return createDefaultState();
+    }
+
     const parsed = JSON.parse(saved);
     const nextState = {
       ...createDefaultState(),
@@ -167,7 +168,24 @@ function normalizeNotes(notes) {
 }
 
 function saveState() {
-  localStorage.setItem(storageKey, JSON.stringify(state));
+  try {
+    localStorage.setItem(storageKey, JSON.stringify(state));
+    hideStorageBanner();
+    return true;
+  } catch {
+    showStorageBanner("Browser storage is unavailable. Changes will last only for this session.");
+    return false;
+  }
+}
+
+function showStorageBanner(message) {
+  storageBanner.hidden = false;
+  storageBanner.textContent = message;
+}
+
+function hideStorageBanner() {
+  storageBanner.hidden = true;
+  storageBanner.textContent = "";
 }
 
 function saveFocusText(savedMessage = "Saved for today.") {
