@@ -33,6 +33,7 @@ const taskCount = document.querySelector("#taskCount");
 const noteForm = document.querySelector("#noteForm");
 const noteInput = document.querySelector("#noteInput");
 const addNote = document.querySelector("#addNote");
+const noteStatus = document.querySelector("#noteStatus");
 const notesList = document.querySelector("#notesList");
 const drafts = loadDrafts();
 
@@ -212,7 +213,7 @@ function updateActionStates() {
   saveFocus.disabled = focusText.length === 0;
   clearFocus.disabled = state.focus.text.length === 0 && focusText.length === 0;
   addTask.disabled = taskText.length === 0 || getTaskValidationMessage(taskText).length > 0;
-  addNote.disabled = noteText.length === 0;
+  addNote.disabled = noteText.length === 0 || getNoteValidationMessage(noteText).length > 0;
 }
 
 function getTaskValidationMessage(taskText) {
@@ -229,6 +230,25 @@ function getTaskValidationMessage(taskText) {
 
   if (hasDuplicate) {
     return "That task is already in your backlog.";
+  }
+
+  return "";
+}
+
+function getNoteValidationMessage(noteText) {
+  if (!noteText) {
+    return "Add one short learning note before submitting.";
+  }
+
+  if (noteText.length > 280) {
+    return "Keep learning notes under 280 characters so they stay easy to scan later.";
+  }
+
+  const normalizedNote = noteText.toLocaleLowerCase();
+  const hasDuplicate = state.notes.some((note) => note.text.toLocaleLowerCase() === normalizedNote);
+
+  if (hasDuplicate) {
+    return "That learning note is already saved.";
   }
 
   return "";
@@ -314,6 +334,9 @@ function renderNotes() {
       state.notes.splice(noteIndex, 1);
       saveState();
       renderNotes();
+      noteStatus.textContent = `Deleted note from ${time.textContent}.`;
+      noteStatus.dataset.tone = "success";
+      updateActionStates();
     });
 
     header.className = "note-meta";
@@ -346,6 +369,8 @@ taskInput.addEventListener("input", () => {
 
 noteInput.addEventListener("input", () => {
   saveDraft("note", noteInput.value);
+  noteStatus.textContent = noteInput.value.trim() ? getNoteValidationMessage(noteInput.value.trim()) : "";
+  noteStatus.dataset.tone = noteStatus.textContent ? "warning" : "";
   updateActionStates();
 });
 
@@ -383,8 +408,12 @@ taskForm.addEventListener("submit", (event) => {
 noteForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const noteText = noteInput.value.trim();
+  const validationMessage = getNoteValidationMessage(noteText);
 
-  if (!noteText) {
+  if (validationMessage) {
+    noteStatus.textContent = validationMessage;
+    noteStatus.dataset.tone = "warning";
+    updateActionStates();
     return;
   }
 
@@ -394,6 +423,8 @@ noteForm.addEventListener("submit", (event) => {
   });
   noteInput.value = "";
   saveDraft("note", "");
+  noteStatus.textContent = "Saved learning note.";
+  noteStatus.dataset.tone = "success";
   saveState();
   updateActionStates();
   renderNotes();
@@ -410,6 +441,8 @@ if (drafts.focus || drafts.task || drafts.note) {
 
 taskStatus.textContent = taskInput.value.trim() ? getTaskValidationMessage(taskInput.value.trim()) : "";
 taskStatus.dataset.tone = taskStatus.textContent ? "warning" : "";
+noteStatus.textContent = noteInput.value.trim() ? getNoteValidationMessage(noteInput.value.trim()) : "";
+noteStatus.dataset.tone = noteStatus.textContent ? "warning" : "";
 updateActionStates();
 renderTasks();
 renderNotes();
