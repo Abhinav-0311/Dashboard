@@ -27,6 +27,7 @@ const clearFocus = document.querySelector("#clearFocus");
 const taskForm = document.querySelector("#taskForm");
 const taskInput = document.querySelector("#taskInput");
 const addTask = document.querySelector("#addTask");
+const taskStatus = document.querySelector("#taskStatus");
 const taskList = document.querySelector("#taskList");
 const taskCount = document.querySelector("#taskCount");
 const noteForm = document.querySelector("#noteForm");
@@ -210,8 +211,27 @@ function updateActionStates() {
 
   saveFocus.disabled = focusText.length === 0;
   clearFocus.disabled = state.focus.text.length === 0 && focusText.length === 0;
-  addTask.disabled = taskText.length === 0;
+  addTask.disabled = taskText.length === 0 || getTaskValidationMessage(taskText).length > 0;
   addNote.disabled = noteText.length === 0;
+}
+
+function getTaskValidationMessage(taskText) {
+  if (!taskText) {
+    return "Add a small task before submitting.";
+  }
+
+  if (taskText.length > 120) {
+    return "Keep backlog items under 120 characters so they stay scannable.";
+  }
+
+  const normalizedTask = taskText.toLocaleLowerCase();
+  const hasDuplicate = state.tasks.some((task) => task.toLocaleLowerCase() === normalizedTask);
+
+  if (hasDuplicate) {
+    return "That task is already in your backlog.";
+  }
+
+  return "";
 }
 
 function setDate() {
@@ -249,6 +269,9 @@ function renderTasks() {
       state.tasks.splice(index, 1);
       saveState();
       renderTasks();
+      taskStatus.textContent = `Completed task: ${task}`;
+      taskStatus.dataset.tone = "success";
+      updateActionStates();
     });
 
     item.append(label, remove);
@@ -316,6 +339,8 @@ focusInput.addEventListener("input", () => {
 
 taskInput.addEventListener("input", () => {
   saveDraft("task", taskInput.value);
+  taskStatus.textContent = taskInput.value.trim() ? getTaskValidationMessage(taskInput.value.trim()) : "";
+  taskStatus.dataset.tone = taskStatus.textContent ? "warning" : "";
   updateActionStates();
 });
 
@@ -336,8 +361,12 @@ clearFocus.addEventListener("click", () => {
 taskForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const nextTask = taskInput.value.trim();
+  const validationMessage = getTaskValidationMessage(nextTask);
 
-  if (!nextTask) {
+  if (validationMessage) {
+    taskStatus.textContent = validationMessage;
+    taskStatus.dataset.tone = "warning";
+    updateActionStates();
     return;
   }
 
@@ -345,6 +374,8 @@ taskForm.addEventListener("submit", (event) => {
   taskInput.value = "";
   saveDraft("task", "");
   saveState();
+  taskStatus.textContent = `Added task: ${nextTask}`;
+  taskStatus.dataset.tone = "success";
   updateActionStates();
   renderTasks();
 });
@@ -377,6 +408,8 @@ if (drafts.focus || drafts.task || drafts.note) {
   focusStatus.textContent = "Restored unsaved draft text from this tab.";
 }
 
+taskStatus.textContent = taskInput.value.trim() ? getTaskValidationMessage(taskInput.value.trim()) : "";
+taskStatus.dataset.tone = taskStatus.textContent ? "warning" : "";
 updateActionStates();
 renderTasks();
 renderNotes();

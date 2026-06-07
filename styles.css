@@ -79,6 +79,21 @@ label {
   font-size: 0.85rem;
 }
 
+.field-status {
+  min-height: 1.4rem;
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.field-status[data-tone="warning"] {
+  color: #9a4d17;
+}
+
+.field-status[data-tone="success"] {
+  color: #1e6a45;
+}
+
 .shell {
   width: min(1120px, calc(100% - 32px));
   margin: 0 auto;
