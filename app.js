@@ -193,16 +193,23 @@ function hideStorageBanner() {
 function saveFocusText(savedMessage = "Saved for today.") {
   const nextFocus = focusInput.value.trim();
 
-  state.focus = nextFocus
-    ? {
-        text: nextFocus,
-        savedOn: todayKey
-      }
-    : { ...defaultState.focus };
+  if (!nextFocus) {
+    focusStatus.textContent = "Add a focus before saving.";
+    focusStatus.dataset.tone = "warning";
+    updateActionStates();
+    return false;
+  }
+
+  state.focus = {
+    text: nextFocus,
+    savedOn: todayKey
+  };
   saveDraft("focus", "");
   saveState();
   updateActionStates();
-  focusStatus.textContent = nextFocus ? savedMessage : "Add a focus before saving.";
+  focusStatus.textContent = savedMessage;
+  focusStatus.dataset.tone = "success";
+  return true;
 }
 
 function updateActionStates() {
@@ -357,6 +364,8 @@ focusInput.addEventListener("keydown", (event) => {
 
 focusInput.addEventListener("input", () => {
   saveDraft("focus", focusInput.value);
+  focusStatus.textContent = "";
+  focusStatus.dataset.tone = "";
   updateActionStates();
 });
 
@@ -381,6 +390,7 @@ clearFocus.addEventListener("click", () => {
   saveState();
   updateActionStates();
   focusStatus.textContent = "Focus cleared.";
+  focusStatus.dataset.tone = "success";
 });
 
 taskForm.addEventListener("submit", (event) => {
@@ -437,6 +447,7 @@ noteInput.value = typeof drafts.note === "string" ? drafts.note : "";
 
 if (drafts.focus || drafts.task || drafts.note) {
   focusStatus.textContent = "Restored unsaved draft text from this tab.";
+  focusStatus.dataset.tone = "";
 }
 
 taskStatus.textContent = taskInput.value.trim() ? getTaskValidationMessage(taskInput.value.trim()) : "";
