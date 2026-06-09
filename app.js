@@ -180,6 +180,10 @@ function saveState() {
   }
 }
 
+function getPersistenceMessage(successMessage, fallbackMessage) {
+  return saveState() ? successMessage : fallbackMessage;
+}
+
 function showStorageBanner(message) {
   storageBanner.hidden = false;
   storageBanner.textContent = message;
@@ -205,9 +209,11 @@ function saveFocusText(savedMessage = "Saved for today.") {
     savedOn: todayKey
   };
   saveDraft("focus", "");
-  saveState();
   updateActionStates();
-  focusStatus.textContent = savedMessage;
+  focusStatus.textContent = getPersistenceMessage(
+    savedMessage,
+    "Focus updated for this session only because browser storage is unavailable."
+  );
   focusStatus.dataset.tone = "success";
   return true;
 }
@@ -294,9 +300,12 @@ function renderTasks() {
     remove.setAttribute("aria-label", `Mark task done: ${task}`);
     remove.addEventListener("click", () => {
       state.tasks.splice(index, 1);
-      saveState();
+      const statusMessage = getPersistenceMessage(
+        `Completed task: ${task}`,
+        `Completed task for this session only: ${task}`
+      );
       renderTasks();
-      taskStatus.textContent = `Completed task: ${task}`;
+      taskStatus.textContent = statusMessage;
       taskStatus.dataset.tone = "success";
       updateActionStates();
     });
@@ -339,9 +348,12 @@ function renderNotes() {
     remove.setAttribute("aria-label", `Delete note from ${time.textContent}`);
     remove.addEventListener("click", () => {
       state.notes.splice(noteIndex, 1);
-      saveState();
+      const statusMessage = getPersistenceMessage(
+        `Deleted note from ${time.textContent}.`,
+        `Deleted note for this session only from ${time.textContent}.`
+      );
       renderNotes();
-      noteStatus.textContent = `Deleted note from ${time.textContent}.`;
+      noteStatus.textContent = statusMessage;
       noteStatus.dataset.tone = "success";
       updateActionStates();
     });
@@ -387,9 +399,12 @@ clearFocus.addEventListener("click", () => {
   state.focus = { ...defaultState.focus };
   focusInput.value = "";
   saveDraft("focus", "");
-  saveState();
+  const statusMessage = getPersistenceMessage(
+    "Focus cleared.",
+    "Focus cleared for this session only because browser storage is unavailable."
+  );
   updateActionStates();
-  focusStatus.textContent = "Focus cleared.";
+  focusStatus.textContent = statusMessage;
   focusStatus.dataset.tone = "success";
 });
 
@@ -408,8 +423,10 @@ taskForm.addEventListener("submit", (event) => {
   state.tasks.unshift(nextTask);
   taskInput.value = "";
   saveDraft("task", "");
-  saveState();
-  taskStatus.textContent = `Added task: ${nextTask}`;
+  taskStatus.textContent = getPersistenceMessage(
+    `Added task: ${nextTask}`,
+    `Added task for this session only: ${nextTask}`
+  );
   taskStatus.dataset.tone = "success";
   updateActionStates();
   renderTasks();
@@ -433,9 +450,11 @@ noteForm.addEventListener("submit", (event) => {
   });
   noteInput.value = "";
   saveDraft("note", "");
-  noteStatus.textContent = "Saved learning note.";
+  noteStatus.textContent = getPersistenceMessage(
+    "Saved learning note.",
+    "Saved learning note for this session only because browser storage is unavailable."
+  );
   noteStatus.dataset.tone = "success";
-  saveState();
   updateActionStates();
   renderNotes();
 });
