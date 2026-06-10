@@ -14,7 +14,6 @@ const defaultState = {
   notes: []
 };
 
-const todayKey = getLocalDateKey(new Date());
 const state = loadState();
 
 const weekday = document.querySelector("#weekday");
@@ -100,6 +99,10 @@ function getLocalDateKey(date) {
   return `${year}-${month}-${day}`;
 }
 
+function getTodayKey() {
+  return getLocalDateKey(new Date());
+}
+
 function loadState() {
   try {
     const saved = localStorage.getItem(storageKey);
@@ -117,7 +120,7 @@ function loadState() {
       notes: normalizeNotes(parsed.notes)
     };
 
-    if (nextState.focus.savedOn !== todayKey) {
+    if (nextState.focus.savedOn !== getTodayKey()) {
       nextState.focus = { ...defaultState.focus };
     }
 
@@ -131,7 +134,7 @@ function normalizeFocus(focus) {
   if (typeof focus === "string") {
     return {
       text: focus,
-      savedOn: todayKey
+      savedOn: getTodayKey()
     };
   }
 
@@ -206,7 +209,7 @@ function saveFocusText(savedMessage = "Saved for today.") {
 
   state.focus = {
     text: nextFocus,
-    savedOn: todayKey
+    savedOn: getTodayKey()
   };
   saveDraft("focus", "");
   updateActionStates();
@@ -275,6 +278,25 @@ function setDate() {
     day: "numeric",
     year: "numeric"
   });
+}
+
+function syncDayBoundary() {
+  const todayKey = getTodayKey();
+  const hasStaleFocus = state.focus.text && state.focus.savedOn && state.focus.savedOn !== todayKey;
+
+  if (!hasStaleFocus) {
+    return;
+  }
+
+  state.focus = { ...defaultState.focus };
+
+  if (!drafts.focus) {
+    focusInput.value = "";
+  }
+
+  saveState();
+  focusStatus.textContent = "Started a new day. Yesterday's saved focus was cleared.";
+  focusStatus.dataset.tone = "";
 }
 
 function renderTasks() {
@@ -460,6 +482,7 @@ noteForm.addEventListener("submit", (event) => {
 });
 
 setDate();
+syncDayBoundary();
 focusInput.value = typeof drafts.focus === "string" ? drafts.focus : state.focus.text;
 taskInput.value = typeof drafts.task === "string" ? drafts.task : "";
 noteInput.value = typeof drafts.note === "string" ? drafts.note : "";
@@ -476,3 +499,9 @@ noteStatus.dataset.tone = noteStatus.textContent ? "warning" : "";
 updateActionStates();
 renderTasks();
 renderNotes();
+
+window.addEventListener("focus", () => {
+  setDate();
+  syncDayBoundary();
+  updateActionStates();
+});
