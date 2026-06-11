@@ -293,6 +293,33 @@ function getNoteValidationMessage(noteText) {
   return "";
 }
 
+function saveNoteFromInput(savedMessage = "Saved learning note.") {
+  const noteText = noteInput.value.trim();
+  const validationMessage = getNoteValidationMessage(noteText);
+
+  if (validationMessage) {
+    noteStatus.textContent = validationMessage;
+    noteStatus.dataset.tone = "warning";
+    updateActionStates();
+    return false;
+  }
+
+  state.notes.push({
+    text: noteText,
+    createdAt: new Date().toISOString()
+  });
+  noteInput.value = "";
+  saveDraft("note", "");
+  noteStatus.textContent = getPersistenceMessage(
+    savedMessage,
+    "Saved learning note for this session only because browser storage is unavailable."
+  );
+  noteStatus.dataset.tone = "success";
+  updateActionStates();
+  renderNotes();
+  return true;
+}
+
 function setDate() {
   const today = new Date();
   weekday.textContent = today.toLocaleDateString(undefined, { weekday: "long" });
@@ -476,6 +503,13 @@ noteInput.addEventListener("input", () => {
   updateActionStates();
 });
 
+noteInput.addEventListener("keydown", (event) => {
+  if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+    event.preventDefault();
+    saveNoteFromInput("Saved learning note with keyboard shortcut.");
+  }
+});
+
 clearFocus.addEventListener("click", () => {
   state.focus = { ...defaultState.focus };
   focusInput.value = "";
@@ -527,29 +561,7 @@ clearCompleted.addEventListener("click", () => {
 
 noteForm.addEventListener("submit", (event) => {
   event.preventDefault();
-  const noteText = noteInput.value.trim();
-  const validationMessage = getNoteValidationMessage(noteText);
-
-  if (validationMessage) {
-    noteStatus.textContent = validationMessage;
-    noteStatus.dataset.tone = "warning";
-    updateActionStates();
-    return;
-  }
-
-  state.notes.push({
-    text: noteText,
-    createdAt: new Date().toISOString()
-  });
-  noteInput.value = "";
-  saveDraft("note", "");
-  noteStatus.textContent = getPersistenceMessage(
-    "Saved learning note.",
-    "Saved learning note for this session only because browser storage is unavailable."
-  );
-  noteStatus.dataset.tone = "success";
-  updateActionStates();
-  renderNotes();
+  saveNoteFromInput();
 });
 
 setDate();
