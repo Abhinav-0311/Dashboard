@@ -59,6 +59,20 @@
           </form>
           <p class="field-status" id="taskStatus" role="status" aria-live="polite"></p>
           <ul class="task-list" id="taskList"></ul>
+
+          <div class="completed-tasks">
+            <div class="subsection-header">
+              <div>
+                <p class="section-kicker">Recently finished</p>
+                <h3>Completed tasks</h3>
+              </div>
+              <div class="completed-meta">
+                <span class="count" id="completedTaskCount">0</span>
+                <button class="ghost-button" id="clearCompleted" type="button">Clear history</button>
+              </div>
+            </div>
+            <ul class="completed-task-list" id="completedTaskList"></ul>
+          </div>
         </article>
 
         <article class="panel notes-panel">

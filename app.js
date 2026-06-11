@@ -11,6 +11,7 @@ const defaultState = {
     "Create a completed tasks view",
     "Write a deployment checklist"
   ],
+  completedTasks: [],
   notes: []
 };
 
@@ -29,6 +30,9 @@ const addTask = document.querySelector("#addTask");
 const taskStatus = document.querySelector("#taskStatus");
 const taskList = document.querySelector("#taskList");
 const taskCount = document.querySelector("#taskCount");
+const clearCompleted = document.querySelector("#clearCompleted");
+const completedTaskCount = document.querySelector("#completedTaskCount");
+const completedTaskList = document.querySelector("#completedTaskList");
 const noteForm = document.querySelector("#noteForm");
 const noteInput = document.querySelector("#noteInput");
 const addNote = document.querySelector("#addNote");
@@ -40,6 +44,7 @@ function createDefaultState() {
   return {
     focus: { ...defaultState.focus },
     tasks: [...defaultState.tasks],
+    completedTasks: [...defaultState.completedTasks],
     notes: [...defaultState.notes]
   };
 }
@@ -117,6 +122,7 @@ function loadState() {
       ...parsed,
       focus: normalizeFocus(parsed.focus),
       tasks: normalizeTasks(parsed.tasks),
+      completedTasks: normalizeCompletedTasks(parsed.completedTasks),
       notes: normalizeNotes(parsed.notes)
     };
 
@@ -168,6 +174,22 @@ function normalizeNotes(notes) {
       typeof note.text === "string" &&
       note.text.trim().length > 0 &&
       typeof note.createdAt === "string"
+    );
+  });
+}
+
+function normalizeCompletedTasks(completedTasks) {
+  if (!Array.isArray(completedTasks)) {
+    return [];
+  }
+
+  return completedTasks.filter((task) => {
+    return (
+      task &&
+      typeof task === "object" &&
+      typeof task.text === "string" &&
+      task.text.trim().length > 0 &&
+      typeof task.completedAt === "string"
     );
   });
 }
@@ -230,6 +252,7 @@ function updateActionStates() {
   clearFocus.disabled = state.focus.text.length === 0 && focusText.length === 0;
   addTask.disabled = taskText.length === 0 || getTaskValidationMessage(taskText).length > 0;
   addNote.disabled = noteText.length === 0 || getNoteValidationMessage(noteText).length > 0;
+  clearCompleted.disabled = state.completedTasks.length === 0;
 }
 
 function getTaskValidationMessage(taskText) {
@@ -322,11 +345,16 @@ function renderTasks() {
     remove.setAttribute("aria-label", `Mark task done: ${task}`);
     remove.addEventListener("click", () => {
       state.tasks.splice(index, 1);
+      state.completedTasks.unshift({
+        text: task,
+        completedAt: new Date().toISOString()
+      });
       const statusMessage = getPersistenceMessage(
         `Completed task: ${task}`,
         `Completed task for this session only: ${task}`
       );
       renderTasks();
+      renderCompletedTasks();
       taskStatus.textContent = statusMessage;
       taskStatus.dataset.tone = "success";
       updateActionStates();
@@ -334,6 +362,37 @@ function renderTasks() {
 
     item.append(label, remove);
     taskList.append(item);
+  });
+}
+
+function renderCompletedTasks() {
+  completedTaskList.innerHTML = "";
+  completedTaskCount.textContent = state.completedTasks.length;
+
+  if (state.completedTasks.length === 0) {
+    const empty = document.createElement("li");
+    empty.className = "empty-state";
+    empty.textContent = "Finish a task to build a visible streak of completed work.";
+    completedTaskList.append(empty);
+    return;
+  }
+
+  state.completedTasks.slice(0, 5).forEach((task) => {
+    const item = document.createElement("li");
+    const label = document.createElement("span");
+    const time = document.createElement("time");
+
+    label.textContent = task.text;
+    time.dateTime = task.completedAt;
+    time.textContent = `Completed ${new Date(task.completedAt).toLocaleString(undefined, {
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit"
+    })}`;
+
+    item.append(label, time);
+    completedTaskList.append(item);
   });
 }
 
@@ -454,6 +513,18 @@ taskForm.addEventListener("submit", (event) => {
   renderTasks();
 });
 
+clearCompleted.addEventListener("click", () => {
+  state.completedTasks = [];
+  const statusMessage = getPersistenceMessage(
+    "Cleared completed task history.",
+    "Cleared completed task history for this session only."
+  );
+  renderCompletedTasks();
+  taskStatus.textContent = statusMessage;
+  taskStatus.dataset.tone = "success";
+  updateActionStates();
+});
+
 noteForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const noteText = noteInput.value.trim();
@@ -498,6 +569,7 @@ noteStatus.textContent = noteInput.value.trim() ? getNoteValidationMessage(noteI
 noteStatus.dataset.tone = noteStatus.textContent ? "warning" : "";
 updateActionStates();
 renderTasks();
+renderCompletedTasks();
 renderNotes();
 
 window.addEventListener("focus", () => {

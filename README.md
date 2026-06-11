@@ -7,6 +7,7 @@ The first version includes:
 - A daily focus prompt that resets each new day
 - A keyboard shortcut for saving focus with `Ctrl+Enter` or `Cmd+Enter`
 - A small task backlog
+- A recent completed-task history so finished work stays visible
 - Learning notes saved in local storage
 - Empty states for cleared task and note lists
 - A 30-day improvement roadmap
