@@ -349,6 +349,26 @@ function syncDayBoundary() {
   focusStatus.dataset.tone = "";
 }
 
+function handleDayChange() {
+  setDate();
+  syncDayBoundary();
+  updateActionStates();
+}
+
+function scheduleDayBoundaryRefresh() {
+  const now = new Date();
+  const nextMidnight = new Date(now);
+
+  nextMidnight.setHours(24, 0, 0, 0);
+
+  const delay = Math.max(nextMidnight.getTime() - now.getTime(), 1000);
+
+  window.setTimeout(() => {
+    handleDayChange();
+    scheduleDayBoundaryRefresh();
+  }, delay);
+}
+
 function renderTasks() {
   taskList.innerHTML = "";
   taskCount.textContent = state.tasks.length;
@@ -564,8 +584,7 @@ noteForm.addEventListener("submit", (event) => {
   saveNoteFromInput();
 });
 
-setDate();
-syncDayBoundary();
+handleDayChange();
 focusInput.value = typeof drafts.focus === "string" ? drafts.focus : state.focus.text;
 taskInput.value = typeof drafts.task === "string" ? drafts.task : "";
 noteInput.value = typeof drafts.note === "string" ? drafts.note : "";
@@ -583,9 +602,8 @@ updateActionStates();
 renderTasks();
 renderCompletedTasks();
 renderNotes();
+scheduleDayBoundaryRefresh();
 
 window.addEventListener("focus", () => {
-  setDate();
-  syncDayBoundary();
-  updateActionStates();
+  handleDayChange();
 });
