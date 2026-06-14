@@ -369,6 +369,23 @@ function scheduleDayBoundaryRefresh() {
   }, delay);
 }
 
+function setRestoredDraftStatuses() {
+  if (typeof drafts.focus === "string" && drafts.focus.trim()) {
+    focusStatus.textContent = "Restored unsaved focus draft from this tab.";
+    focusStatus.dataset.tone = "";
+  }
+
+  if (typeof drafts.task === "string" && drafts.task.trim() && !taskStatus.textContent) {
+    taskStatus.textContent = "Restored unsaved task draft from this tab.";
+    taskStatus.dataset.tone = "";
+  }
+
+  if (typeof drafts.note === "string" && drafts.note.trim() && !noteStatus.textContent) {
+    noteStatus.textContent = "Restored unsaved learning note draft from this tab.";
+    noteStatus.dataset.tone = "";
+  }
+}
+
 function renderTasks() {
   taskList.innerHTML = "";
   taskCount.textContent = state.tasks.length;
@@ -589,15 +606,11 @@ focusInput.value = typeof drafts.focus === "string" ? drafts.focus : state.focus
 taskInput.value = typeof drafts.task === "string" ? drafts.task : "";
 noteInput.value = typeof drafts.note === "string" ? drafts.note : "";
 
-if (drafts.focus || drafts.task || drafts.note) {
-  focusStatus.textContent = "Restored unsaved draft text from this tab.";
-  focusStatus.dataset.tone = "";
-}
-
 taskStatus.textContent = taskInput.value.trim() ? getTaskValidationMessage(taskInput.value.trim()) : "";
 taskStatus.dataset.tone = taskStatus.textContent ? "warning" : "";
 noteStatus.textContent = noteInput.value.trim() ? getNoteValidationMessage(noteInput.value.trim()) : "";
 noteStatus.dataset.tone = noteStatus.textContent ? "warning" : "";
+setRestoredDraftStatuses();
 updateActionStates();
 renderTasks();
 renderCompletedTasks();
