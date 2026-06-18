@@ -20,6 +20,10 @@ const state = loadState();
 const weekday = document.querySelector("#weekday");
 const dateLabel = document.querySelector("#dateLabel");
 const storageBanner = document.querySelector("#storageBanner");
+const streakCount = document.querySelector("#streakCount");
+const streakMessage = document.querySelector("#streakMessage");
+const todayCompletedCount = document.querySelector("#todayCompletedCount");
+const totalNotesCount = document.querySelector("#totalNotesCount");
 const focusInput = document.querySelector("#focusInput");
 const focusStatus = document.querySelector("#focusStatus");
 const saveFocus = document.querySelector("#saveFocus");
@@ -106,6 +110,16 @@ function getLocalDateKey(date) {
 
 function getTodayKey() {
   return getLocalDateKey(new Date());
+}
+
+function isSameLocalDay(isoString, dateKey) {
+  const date = new Date(isoString);
+
+  if (Number.isNaN(date.getTime())) {
+    return false;
+  }
+
+  return getLocalDateKey(date) === dateKey;
 }
 
 function loadState() {
@@ -386,6 +400,66 @@ function setRestoredDraftStatuses() {
   }
 }
 
+function getCompletedDayKeys() {
+  const completedDayKeys = new Set();
+
+  state.completedTasks.forEach((task) => {
+    if (typeof task.completedAt !== "string") {
+      return;
+    }
+
+    const completedDate = new Date(task.completedAt);
+
+    if (Number.isNaN(completedDate.getTime())) {
+      return;
+    }
+
+    completedDayKeys.add(getLocalDateKey(completedDate));
+  });
+
+  return completedDayKeys;
+}
+
+function getCompletionStreak() {
+  const completedDayKeys = getCompletedDayKeys();
+
+  if (completedDayKeys.size === 0) {
+    return 0;
+  }
+
+  const today = new Date();
+  let streak = 0;
+
+  while (completedDayKeys.has(getLocalDateKey(today))) {
+    streak += 1;
+    today.setDate(today.getDate() - 1);
+  }
+
+  return streak;
+}
+
+function renderStats() {
+  const todayKey = getTodayKey();
+  const streak = getCompletionStreak();
+  const completedToday = state.completedTasks.filter((task) => isSameLocalDay(task.completedAt, todayKey)).length;
+
+  streakCount.textContent = String(streak);
+  todayCompletedCount.textContent = String(completedToday);
+  totalNotesCount.textContent = String(state.notes.length);
+
+  if (streak === 0) {
+    streakMessage.textContent = "Complete one task today to start a streak.";
+    return;
+  }
+
+  if (completedToday > 0) {
+    streakMessage.textContent = "You extended the streak today. Keep the chain intact.";
+    return;
+  }
+
+  streakMessage.textContent = "No task finished yet today. Complete one to keep the streak alive.";
+}
+
 function renderTasks() {
   taskList.innerHTML = "";
   taskCount.textContent = state.tasks.length;
@@ -419,6 +493,7 @@ function renderTasks() {
       );
       renderTasks();
       renderCompletedTasks();
+      renderStats();
       taskStatus.textContent = statusMessage;
       taskStatus.dataset.tone = "success";
       updateActionStates();
@@ -498,6 +573,7 @@ function renderNotes() {
         `Deleted note for this session only from ${time.textContent}.`
       );
       renderNotes();
+      renderStats();
       noteStatus.textContent = statusMessage;
       noteStatus.dataset.tone = "success";
       updateActionStates();
@@ -591,6 +667,7 @@ clearCompleted.addEventListener("click", () => {
     "Cleared completed task history for this session only."
   );
   renderCompletedTasks();
+  renderStats();
   taskStatus.textContent = statusMessage;
   taskStatus.dataset.tone = "success";
   updateActionStates();
@@ -615,6 +692,7 @@ updateActionStates();
 renderTasks();
 renderCompletedTasks();
 renderNotes();
+renderStats();
 scheduleDayBoundaryRefresh();
 
 window.addEventListener("focus", () => {

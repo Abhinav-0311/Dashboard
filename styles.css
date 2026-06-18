@@ -118,6 +118,46 @@ label {
   padding: 36px 0 28px;
 }
 
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.stat-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at top right, rgba(23, 107, 135, 0.12), transparent 35%),
+    var(--surface);
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+
+.streak-card {
+  background:
+    radial-gradient(circle at top right, rgba(244, 182, 166, 0.28), transparent 38%),
+    linear-gradient(180deg, #ffffff 0%, #fff7f3 100%);
+}
+
+.stat-card h2 {
+  margin-bottom: 14px;
+}
+
+.stat-value {
+  margin-bottom: 10px;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.stat-copy {
+  margin-bottom: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
 .eyebrow,
 .section-kicker {
   margin: 0 0 8px;
@@ -406,6 +446,7 @@ h3 {
 
 @media (max-width: 860px) {
   .hero,
+  .stats-grid,
   .dashboard {
     grid-template-columns: 1fr;
   }
