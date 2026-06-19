@@ -8,7 +8,7 @@ The first version includes:
 - A keyboard shortcut for saving focus with `Ctrl+Enter` or `Cmd+Enter`
 - A matching keyboard shortcut for saving learning notes with `Ctrl+Enter` or `Cmd+Enter`
 - A small task backlog
-- A recent completed-task history so finished work stays visible
+- A recent completed-task history so finished work stays visible, with a confirmation before clearing it
 - Learning notes saved in local storage
 - Empty states for cleared task and note lists
 - A 30-day improvement roadmap

@@ -661,6 +661,23 @@ taskForm.addEventListener("submit", (event) => {
 });
 
 clearCompleted.addEventListener("click", () => {
+  const completedCount = state.completedTasks.length;
+
+  if (completedCount === 0) {
+    updateActionStates();
+    return;
+  }
+
+  const historyLabel = completedCount === 1 ? "1 completed task" : `${completedCount} completed tasks`;
+  const confirmed = window.confirm(`Clear ${historyLabel} from your history?`);
+
+  if (!confirmed) {
+    taskStatus.textContent = "Kept completed task history.";
+    taskStatus.dataset.tone = "";
+    updateActionStates();
+    return;
+  }
+
   state.completedTasks = [];
   const statusMessage = getPersistenceMessage(
     "Cleared completed task history.",
