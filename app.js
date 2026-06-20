@@ -427,12 +427,17 @@ function getCompletionStreak() {
     return 0;
   }
 
-  const today = new Date();
+  const streakDate = new Date();
+  const todayKey = getLocalDateKey(streakDate);
   let streak = 0;
 
-  while (completedDayKeys.has(getLocalDateKey(today))) {
+  if (!completedDayKeys.has(todayKey)) {
+    streakDate.setDate(streakDate.getDate() - 1);
+  }
+
+  while (completedDayKeys.has(getLocalDateKey(streakDate))) {
     streak += 1;
-    today.setDate(today.getDate() - 1);
+    streakDate.setDate(streakDate.getDate() - 1);
   }
 
   return streak;
