@@ -7,6 +7,7 @@ The first version includes:
 - A daily focus prompt that resets each new day, even if the dashboard stays open overnight
 - A keyboard shortcut for saving focus with `Ctrl+Enter` or `Cmd+Enter`
 - A matching keyboard shortcut for saving learning notes with `Ctrl+Enter` or `Cmd+Enter`
+- A matching keyboard shortcut for adding backlog tasks with `Ctrl+Enter` or `Cmd+Enter`
 - A small task backlog
 - A recent completed-task history so finished work stays visible, with a confirmation before clearing it
 - Learning notes saved in local storage

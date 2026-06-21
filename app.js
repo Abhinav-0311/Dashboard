@@ -334,6 +334,30 @@ function saveNoteFromInput(savedMessage = "Saved learning note.") {
   return true;
 }
 
+function saveTaskFromInput(savedMessage = null) {
+  const nextTask = taskInput.value.trim();
+  const validationMessage = getTaskValidationMessage(nextTask);
+
+  if (validationMessage) {
+    taskStatus.textContent = validationMessage;
+    taskStatus.dataset.tone = "warning";
+    updateActionStates();
+    return false;
+  }
+
+  state.tasks.unshift(nextTask);
+  taskInput.value = "";
+  saveDraft("task", "");
+  taskStatus.textContent = getPersistenceMessage(
+    savedMessage ?? `Added task: ${nextTask}`,
+    `Added task for this session only: ${nextTask}`
+  );
+  taskStatus.dataset.tone = "success";
+  updateActionStates();
+  renderTasks();
+  return true;
+}
+
 function setDate() {
   const today = new Date();
   weekday.textContent = today.toLocaleDateString(undefined, { weekday: "long" });
@@ -614,6 +638,13 @@ taskInput.addEventListener("input", () => {
   updateActionStates();
 });
 
+taskInput.addEventListener("keydown", (event) => {
+  if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+    event.preventDefault();
+    saveTaskFromInput("Added task with keyboard shortcut.");
+  }
+});
+
 noteInput.addEventListener("input", () => {
   saveDraft("note", noteInput.value);
   noteStatus.textContent = noteInput.value.trim() ? getNoteValidationMessage(noteInput.value.trim()) : "";
@@ -643,26 +674,7 @@ clearFocus.addEventListener("click", () => {
 
 taskForm.addEventListener("submit", (event) => {
   event.preventDefault();
-  const nextTask = taskInput.value.trim();
-  const validationMessage = getTaskValidationMessage(nextTask);
-
-  if (validationMessage) {
-    taskStatus.textContent = validationMessage;
-    taskStatus.dataset.tone = "warning";
-    updateActionStates();
-    return;
-  }
-
-  state.tasks.unshift(nextTask);
-  taskInput.value = "";
-  saveDraft("task", "");
-  taskStatus.textContent = getPersistenceMessage(
-    `Added task: ${nextTask}`,
-    `Added task for this session only: ${nextTask}`
-  );
-  taskStatus.dataset.tone = "success";
-  updateActionStates();
-  renderTasks();
+  saveTaskFromInput();
 });
 
 clearCompleted.addEventListener("click", () => {
