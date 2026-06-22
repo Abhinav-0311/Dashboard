@@ -547,8 +547,11 @@ function renderCompletedTasks() {
 
   state.completedTasks.slice(0, 5).forEach((task) => {
     const item = document.createElement("li");
+    const summary = document.createElement("div");
     const label = document.createElement("span");
+    const actions = document.createElement("div");
     const time = document.createElement("time");
+    const restore = document.createElement("button");
 
     label.textContent = task.text;
     time.dateTime = task.completedAt;
@@ -558,8 +561,36 @@ function renderCompletedTasks() {
       hour: "numeric",
       minute: "2-digit"
     })}`;
+    restore.type = "button";
+    restore.className = "ghost-button restore-button";
+    restore.textContent = "Restore";
+    restore.setAttribute("aria-label", `Restore completed task: ${task.text}`);
+    restore.addEventListener("click", () => {
+      const taskIndex = state.completedTasks.indexOf(task);
 
-    item.append(label, time);
+      if (taskIndex === -1) {
+        return;
+      }
+
+      state.completedTasks.splice(taskIndex, 1);
+      state.tasks.unshift(task.text);
+      const statusMessage = getPersistenceMessage(
+        `Restored task: ${task.text}`,
+        `Restored task for this session only: ${task.text}`
+      );
+      renderTasks();
+      renderCompletedTasks();
+      renderStats();
+      taskStatus.textContent = statusMessage;
+      taskStatus.dataset.tone = "success";
+      updateActionStates();
+    });
+
+    summary.className = "completed-task-summary";
+    summary.append(label, time);
+    actions.className = "completed-task-actions";
+    actions.append(restore);
+    item.append(summary, actions);
     completedTaskList.append(item);
   });
 }

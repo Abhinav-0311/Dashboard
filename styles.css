@@ -348,7 +348,7 @@ h3 {
 
 .subsection-header,
 .completed-task-list li {
-  align-items: center;
+  align-items: start;
   justify-content: space-between;
 }
 
@@ -368,7 +368,23 @@ h3 {
 }
 
 .completed-task-list li {
+  gap: 16px;
+}
+
+.completed-task-summary {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.completed-task-actions {
+  display: flex;
+  flex: 0 0 auto;
   align-items: start;
+}
+
+.restore-button {
+  white-space: nowrap;
 }
 
 .completed-task-list span {
@@ -377,10 +393,8 @@ h3 {
 }
 
 .completed-task-list time {
-  flex: 0 0 auto;
   color: var(--muted);
   font-size: 0.82rem;
-  text-align: right;
 }
 
 .task-list button:disabled,
@@ -477,6 +491,10 @@ h3 {
   .completed-task-list li {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .completed-task-actions {
+    width: 100%;
   }
 
   .focus-actions button,
