@@ -45,6 +45,13 @@ button:hover {
   background: var(--accent-strong);
 }
 
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(23, 107, 135, 0.32);
+  outline-offset: 2px;
+}
+
 button:disabled {
   background: #c7d0d8;
   color: #f7f9fb;
@@ -331,6 +338,13 @@ h3 {
   background: #edf2ef;
   color: var(--ink);
   padding: 0 10px;
+}
+
+.task-list button:focus-visible,
+.ghost-button:focus-visible,
+.note-remove:focus-visible,
+.icon-button:focus-visible {
+  outline-color: rgba(15, 76, 92, 0.38);
 }
 
 .completed-tasks {

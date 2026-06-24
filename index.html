@@ -59,7 +59,7 @@
             </button>
           </div>
           <label for="focusInput">What will you ship today?</label>
-          <textarea id="focusInput" rows="4" placeholder="Example: Add keyboard support to task cards" aria-describedby="focusHint"></textarea>
+          <textarea id="focusInput" rows="4" placeholder="Example: Add keyboard support to task cards" aria-describedby="focusHint" aria-keyshortcuts="Control+Enter Meta+Enter"></textarea>
           <p class="field-hint" id="focusHint">Press Ctrl+Enter (Windows/Linux) or Cmd+Enter (Mac) to save quickly.</p>
           <div class="focus-actions">
             <button id="saveFocus" type="button">Save focus</button>
@@ -77,7 +77,7 @@
           </div>
           <form class="task-form" id="taskForm">
             <label class="sr-only" for="taskInput">Add a small task</label>
-            <input id="taskInput" type="text" placeholder="Add one small improvement" aria-describedby="taskStatus" maxlength="120">
+            <input id="taskInput" type="text" placeholder="Add one small improvement" aria-describedby="taskStatus" aria-keyshortcuts="Control+Enter Meta+Enter" maxlength="120">
             <button id="addTask" type="submit">Add</button>
           </form>
           <p class="field-status" id="taskStatus" role="status" aria-live="polite"></p>
@@ -107,7 +107,7 @@
           </div>
           <form id="noteForm">
             <label for="noteInput">What did you learn or change?</label>
-            <textarea id="noteInput" rows="5" placeholder="Example: Used aria-live for save feedback" aria-describedby="noteStatus" maxlength="280"></textarea>
+            <textarea id="noteInput" rows="5" placeholder="Example: Used aria-live for save feedback" aria-describedby="noteStatus" aria-keyshortcuts="Control+Enter Meta+Enter" maxlength="280"></textarea>
             <p class="field-hint">Press Ctrl+Enter (Windows/Linux) or Cmd+Enter (Mac) to save quickly.</p>
             <button id="addNote" type="submit">Add note</button>
           </form>
