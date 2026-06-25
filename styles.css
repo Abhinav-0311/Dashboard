@@ -332,12 +332,20 @@ h3 {
   overflow-wrap: anywhere;
 }
 
-.task-list button {
+.task-actions {
+  display: flex;
   flex: 0 0 auto;
+  gap: 8px;
+}
+
+.task-list button {
   min-height: 34px;
+  padding: 0 10px;
+}
+
+.task-complete {
   background: #edf2ef;
   color: var(--ink);
-  padding: 0 10px;
 }
 
 .task-list button:focus-visible,
@@ -501,6 +509,7 @@ h3 {
 
   .focus-actions,
   .task-form,
+  .task-actions,
   .subsection-header,
   .completed-task-list li {
     align-items: stretch;

@@ -504,10 +504,14 @@ function renderTasks() {
   state.tasks.forEach((task, index) => {
     const item = document.createElement("li");
     const label = document.createElement("span");
+    const actions = document.createElement("div");
     const remove = document.createElement("button");
+    const discard = document.createElement("button");
 
     label.textContent = task;
+    actions.className = "task-actions";
     remove.type = "button";
+    remove.className = "task-complete";
     remove.textContent = "Done";
     remove.setAttribute("aria-label", `Mark task done: ${task}`);
     remove.addEventListener("click", () => {
@@ -527,8 +531,24 @@ function renderTasks() {
       taskStatus.dataset.tone = "success";
       updateActionStates();
     });
+    discard.type = "button";
+    discard.className = "ghost-button task-discard";
+    discard.textContent = "Remove";
+    discard.setAttribute("aria-label", `Remove task from backlog: ${task}`);
+    discard.addEventListener("click", () => {
+      state.tasks.splice(index, 1);
+      const statusMessage = getPersistenceMessage(
+        `Removed task: ${task}`,
+        `Removed task for this session only: ${task}`
+      );
+      renderTasks();
+      taskStatus.textContent = statusMessage;
+      taskStatus.dataset.tone = "success";
+      updateActionStates();
+    });
 
-    item.append(label, remove);
+    actions.append(discard, remove);
+    item.append(label, actions);
     taskList.append(item);
   });
 }
