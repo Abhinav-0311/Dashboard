@@ -269,6 +269,12 @@ function updateActionStates() {
   clearCompleted.disabled = state.completedTasks.length === 0;
 }
 
+function hasTaskInBacklog(taskText) {
+  const normalizedTask = taskText.toLocaleLowerCase();
+
+  return state.tasks.some((task) => task.toLocaleLowerCase() === normalizedTask);
+}
+
 function getTaskValidationMessage(taskText) {
   if (!taskText) {
     return "Add a small task before submitting.";
@@ -278,10 +284,7 @@ function getTaskValidationMessage(taskText) {
     return "Keep backlog items under 120 characters so they stay scannable.";
   }
 
-  const normalizedTask = taskText.toLocaleLowerCase();
-  const hasDuplicate = state.tasks.some((task) => task.toLocaleLowerCase() === normalizedTask);
-
-  if (hasDuplicate) {
+  if (hasTaskInBacklog(taskText)) {
     return "That task is already in your backlog.";
   }
 
@@ -585,7 +588,22 @@ function renderCompletedTasks() {
     restore.className = "ghost-button restore-button";
     restore.textContent = "Restore";
     restore.setAttribute("aria-label", `Restore completed task: ${task.text}`);
+    const alreadyInBacklog = hasTaskInBacklog(task.text);
+
+    if (alreadyInBacklog) {
+      restore.disabled = true;
+      restore.title = "Task already exists in the backlog.";
+      restore.setAttribute("aria-label", `Task already exists in backlog: ${task.text}`);
+    }
+
     restore.addEventListener("click", () => {
+      if (hasTaskInBacklog(task.text)) {
+        taskStatus.textContent = "That task is already back in your backlog.";
+        taskStatus.dataset.tone = "warning";
+        updateActionStates();
+        return;
+      }
+
       const taskIndex = state.completedTasks.indexOf(task);
 
       if (taskIndex === -1) {

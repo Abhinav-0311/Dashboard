@@ -385,6 +385,12 @@ h3 {
   padding: 0 12px;
 }
 
+.task-list button:disabled,
+.ghost-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
 .completed-task-list {
   list-style: none;
 }
