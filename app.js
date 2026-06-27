@@ -112,6 +112,14 @@ function getTodayKey() {
   return getLocalDateKey(new Date());
 }
 
+function isValidDateString(value) {
+  if (typeof value !== "string") {
+    return false;
+  }
+
+  return !Number.isNaN(new Date(value).getTime());
+}
+
 function isSameLocalDay(isoString, dateKey) {
   const date = new Date(isoString);
 
@@ -187,7 +195,7 @@ function normalizeNotes(notes) {
       typeof note === "object" &&
       typeof note.text === "string" &&
       note.text.trim().length > 0 &&
-      typeof note.createdAt === "string"
+      isValidDateString(note.createdAt)
     );
   });
 }
@@ -203,7 +211,7 @@ function normalizeCompletedTasks(completedTasks) {
       typeof task === "object" &&
       typeof task.text === "string" &&
       task.text.trim().length > 0 &&
-      typeof task.completedAt === "string"
+      isValidDateString(task.completedAt)
     );
   });
 }
