@@ -361,6 +361,12 @@ h3 {
   border-top: 1px solid var(--line);
 }
 
+.list-caption {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
 .subsection-header,
 .completed-meta,
 .completed-task-list li {

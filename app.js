@@ -36,6 +36,7 @@ const taskList = document.querySelector("#taskList");
 const taskCount = document.querySelector("#taskCount");
 const clearCompleted = document.querySelector("#clearCompleted");
 const completedTaskCount = document.querySelector("#completedTaskCount");
+const completedTaskSummary = document.querySelector("#completedTaskSummary");
 const completedTaskList = document.querySelector("#completedTaskList");
 const noteForm = document.querySelector("#noteForm");
 const noteInput = document.querySelector("#noteInput");
@@ -567,6 +568,11 @@ function renderTasks() {
 function renderCompletedTasks() {
   completedTaskList.innerHTML = "";
   completedTaskCount.textContent = state.completedTasks.length;
+  completedTaskSummary.hidden = state.completedTasks.length <= 5;
+  completedTaskSummary.textContent =
+    state.completedTasks.length > 5
+      ? `Showing the 5 most recent of ${state.completedTasks.length} completed tasks.`
+      : "";
 
   if (state.completedTasks.length === 0) {
     const empty = document.createElement("li");
