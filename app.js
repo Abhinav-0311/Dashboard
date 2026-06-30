@@ -319,6 +319,12 @@ function getNoteValidationMessage(noteText) {
   return "";
 }
 
+function getNoteDeleteConfirmationMessage(noteText) {
+  const preview = noteText.length > 60 ? `${noteText.slice(0, 57)}...` : noteText;
+
+  return `Delete this learning note?\n\n"${preview}"`;
+}
+
 function saveNoteFromInput(savedMessage = "Saved learning note.") {
   const noteText = noteInput.value.trim();
   const validationMessage = getNoteValidationMessage(noteText);
@@ -679,6 +685,15 @@ function renderNotes() {
     remove.textContent = "Delete";
     remove.setAttribute("aria-label", `Delete note from ${time.textContent}`);
     remove.addEventListener("click", () => {
+      const confirmed = window.confirm(getNoteDeleteConfirmationMessage(note.text));
+
+      if (!confirmed) {
+        noteStatus.textContent = "Kept learning note.";
+        noteStatus.dataset.tone = "";
+        updateActionStates();
+        return;
+      }
+
       state.notes.splice(noteIndex, 1);
       const statusMessage = getPersistenceMessage(
         `Deleted note from ${time.textContent}.`,
