@@ -113,6 +113,14 @@ function getTodayKey() {
   return getLocalDateKey(new Date());
 }
 
+function normalizeComparableText(value) {
+  if (typeof value !== "string") {
+    return "";
+  }
+
+  return value.trim().replace(/\s+/g, " ").toLocaleLowerCase();
+}
+
 function isValidDateString(value) {
   if (typeof value !== "string") {
     return false;
@@ -279,9 +287,9 @@ function updateActionStates() {
 }
 
 function hasTaskInBacklog(taskText) {
-  const normalizedTask = taskText.toLocaleLowerCase();
+  const normalizedTask = normalizeComparableText(taskText);
 
-  return state.tasks.some((task) => task.toLocaleLowerCase() === normalizedTask);
+  return state.tasks.some((task) => normalizeComparableText(task) === normalizedTask);
 }
 
 function getTaskValidationMessage(taskText) {
@@ -309,8 +317,8 @@ function getNoteValidationMessage(noteText) {
     return "Keep learning notes under 280 characters so they stay easy to scan later.";
   }
 
-  const normalizedNote = noteText.toLocaleLowerCase();
-  const hasDuplicate = state.notes.some((note) => note.text.toLocaleLowerCase() === normalizedNote);
+  const normalizedNote = normalizeComparableText(noteText);
+  const hasDuplicate = state.notes.some((note) => normalizeComparableText(note.text) === normalizedNote);
 
   if (hasDuplicate) {
     return "That learning note is already saved.";
