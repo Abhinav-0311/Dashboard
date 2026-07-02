@@ -5,6 +5,7 @@ A small vanilla HTML, CSS, and JavaScript app for turning daily coding sessions 
 The first version includes:
 
 - A daily focus prompt that resets each new day, even if the dashboard stays open overnight
+- Unsaved focus, task, and note drafts restored after reopening the browser
 - A keyboard shortcut for saving focus with `Ctrl+Enter` or `Cmd+Enter`
 - A matching keyboard shortcut for saving learning notes with `Ctrl+Enter` or `Cmd+Enter`
 - A matching keyboard shortcut for adding backlog tasks with `Ctrl+Enter` or `Cmd+Enter`

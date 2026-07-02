@@ -56,7 +56,7 @@ function createDefaultState() {
 
 function loadDrafts() {
   try {
-    const savedDrafts = sessionStorage.getItem(draftStorageKey);
+    const savedDrafts = localStorage.getItem(draftStorageKey);
 
     if (!savedDrafts) {
       return {};
@@ -91,11 +91,11 @@ function saveDraft(field, value) {
 
   try {
     if (Object.keys(drafts).length === 0) {
-      sessionStorage.removeItem(draftStorageKey);
+      localStorage.removeItem(draftStorageKey);
       return;
     }
 
-    sessionStorage.setItem(draftStorageKey, JSON.stringify(drafts));
+    localStorage.setItem(draftStorageKey, JSON.stringify(drafts));
   } catch {
     // Ignore draft persistence failures and keep the main flows working.
   }
@@ -435,17 +435,17 @@ function scheduleDayBoundaryRefresh() {
 
 function setRestoredDraftStatuses() {
   if (typeof drafts.focus === "string" && drafts.focus.trim()) {
-    focusStatus.textContent = "Restored unsaved focus draft from this tab.";
+    focusStatus.textContent = "Restored unsaved focus draft from your browser.";
     focusStatus.dataset.tone = "";
   }
 
   if (typeof drafts.task === "string" && drafts.task.trim() && !taskStatus.textContent) {
-    taskStatus.textContent = "Restored unsaved task draft from this tab.";
+    taskStatus.textContent = "Restored unsaved task draft from your browser.";
     taskStatus.dataset.tone = "";
   }
 
   if (typeof drafts.note === "string" && drafts.note.trim() && !noteStatus.textContent) {
-    noteStatus.textContent = "Restored unsaved learning note draft from this tab.";
+    noteStatus.textContent = "Restored unsaved learning note draft from your browser.";
     noteStatus.dataset.tone = "";
   }
 }
