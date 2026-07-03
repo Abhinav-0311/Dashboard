@@ -523,7 +523,8 @@ h3 {
   .task-form,
   .task-actions,
   .subsection-header,
-  .completed-task-list li {
+  .completed-task-list li,
+  .completed-meta {
     align-items: stretch;
     flex-direction: column;
   }
@@ -535,8 +536,13 @@ h3 {
   .focus-actions button,
   .task-form button,
   .ghost-button,
-  .note-remove {
+  .note-remove,
+  .completed-meta .count {
     width: 100%;
+  }
+
+  .completed-meta .count {
+    min-height: 42px;
   }
 
   .note-meta {
