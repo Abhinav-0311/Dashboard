@@ -252,9 +252,10 @@ function hideStorageBanner() {
 
 function saveFocusText(savedMessage = "Saved for today.") {
   const nextFocus = focusInput.value.trim();
+  const validationMessage = getFocusValidationMessage(nextFocus);
 
-  if (!nextFocus) {
-    focusStatus.textContent = "Add a focus before saving.";
+  if (validationMessage) {
+    focusStatus.textContent = validationMessage;
     focusStatus.dataset.tone = "warning";
     updateActionStates();
     return false;
@@ -279,11 +280,23 @@ function updateActionStates() {
   const taskText = taskInput.value.trim();
   const noteText = noteInput.value.trim();
 
-  saveFocus.disabled = focusText.length === 0;
+  saveFocus.disabled = focusText.length === 0 || getFocusValidationMessage(focusText).length > 0;
   clearFocus.disabled = state.focus.text.length === 0 && focusText.length === 0;
   addTask.disabled = taskText.length === 0 || getTaskValidationMessage(taskText).length > 0;
   addNote.disabled = noteText.length === 0 || getNoteValidationMessage(noteText).length > 0;
   clearCompleted.disabled = state.completedTasks.length === 0;
+}
+
+function getFocusValidationMessage(focusText) {
+  if (!focusText) {
+    return "Add a focus before saving.";
+  }
+
+  if (focusText.length > 180) {
+    return "Keep today's focus under 180 characters so it stays easy to scan.";
+  }
+
+  return "";
 }
 
 function hasTaskInBacklog(taskText) {
@@ -732,8 +745,8 @@ focusInput.addEventListener("keydown", (event) => {
 
 focusInput.addEventListener("input", () => {
   saveDraft("focus", focusInput.value);
-  focusStatus.textContent = "";
-  focusStatus.dataset.tone = "";
+  focusStatus.textContent = focusInput.value.trim() ? getFocusValidationMessage(focusInput.value.trim()) : "";
+  focusStatus.dataset.tone = focusStatus.textContent ? "warning" : "";
   updateActionStates();
 });
 
