@@ -38,12 +38,14 @@ const clearCompleted = document.querySelector("#clearCompleted");
 const completedTaskCount = document.querySelector("#completedTaskCount");
 const completedTaskSummary = document.querySelector("#completedTaskSummary");
 const completedTaskList = document.querySelector("#completedTaskList");
+const toggleCompletedHistory = document.querySelector("#toggleCompletedHistory");
 const noteForm = document.querySelector("#noteForm");
 const noteInput = document.querySelector("#noteInput");
 const addNote = document.querySelector("#addNote");
 const noteStatus = document.querySelector("#noteStatus");
 const notesList = document.querySelector("#notesList");
 const drafts = loadDrafts();
+let showAllCompletedTasks = false;
 
 function createDefaultState() {
   return {
@@ -593,15 +595,33 @@ function renderTasks() {
 }
 
 function renderCompletedTasks() {
+  const hasOverflowCompletedTasks = state.completedTasks.length > 5;
+
+  if (!hasOverflowCompletedTasks) {
+    showAllCompletedTasks = false;
+  }
+
+  const visibleCompletedTasks = hasOverflowCompletedTasks && !showAllCompletedTasks ? state.completedTasks.slice(0, 5) : state.completedTasks;
+
   completedTaskList.innerHTML = "";
   completedTaskCount.textContent = state.completedTasks.length;
-  completedTaskSummary.hidden = state.completedTasks.length <= 5;
-  completedTaskSummary.textContent =
-    state.completedTasks.length > 5
-      ? `Showing the 5 most recent of ${state.completedTasks.length} completed tasks.`
-      : "";
+  toggleCompletedHistory.hidden = !hasOverflowCompletedTasks;
+  toggleCompletedHistory.textContent = showAllCompletedTasks ? "Show recent" : "Show all";
+  toggleCompletedHistory.setAttribute(
+    "aria-label",
+    showAllCompletedTasks
+      ? "Show only the five most recent completed tasks"
+      : `Show all ${state.completedTasks.length} completed tasks`
+  );
+  completedTaskSummary.hidden = !hasOverflowCompletedTasks;
+  completedTaskSummary.textContent = hasOverflowCompletedTasks
+    ? showAllCompletedTasks
+      ? `Showing all ${state.completedTasks.length} completed tasks.`
+      : `Showing the 5 most recent of ${state.completedTasks.length} completed tasks.`
+    : "";
 
   if (state.completedTasks.length === 0) {
+    showAllCompletedTasks = false;
     const empty = document.createElement("li");
     empty.className = "empty-state";
     empty.textContent = "Finish a task to build a visible streak of completed work.";
@@ -609,7 +629,7 @@ function renderCompletedTasks() {
     return;
   }
 
-  state.completedTasks.slice(0, 5).forEach((task) => {
+  visibleCompletedTasks.forEach((task) => {
     const item = document.createElement("li");
     const summary = document.createElement("div");
     const label = document.createElement("span");
@@ -815,6 +835,7 @@ clearCompleted.addEventListener("click", () => {
   }
 
   state.completedTasks = [];
+  showAllCompletedTasks = false;
   const statusMessage = getPersistenceMessage(
     "Cleared completed task history.",
     "Cleared completed task history for this session only."
@@ -829,6 +850,15 @@ clearCompleted.addEventListener("click", () => {
 noteForm.addEventListener("submit", (event) => {
   event.preventDefault();
   saveNoteFromInput();
+});
+
+toggleCompletedHistory.addEventListener("click", () => {
+  if (state.completedTasks.length <= 5) {
+    return;
+  }
+
+  showAllCompletedTasks = !showAllCompletedTasks;
+  renderCompletedTasks();
 });
 
 handleDayChange();
