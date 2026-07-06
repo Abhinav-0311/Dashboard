@@ -606,6 +606,7 @@ function renderCompletedTasks() {
   completedTaskList.innerHTML = "";
   completedTaskCount.textContent = state.completedTasks.length;
   toggleCompletedHistory.hidden = !hasOverflowCompletedTasks;
+  toggleCompletedHistory.setAttribute("aria-expanded", String(showAllCompletedTasks));
   toggleCompletedHistory.textContent = showAllCompletedTasks ? "Show recent" : "Show all";
   toggleCompletedHistory.setAttribute(
     "aria-label",
