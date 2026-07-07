@@ -47,6 +47,16 @@ const notesList = document.querySelector("#notesList");
 const drafts = loadDrafts();
 let showAllCompletedTasks = false;
 
+function focusElement(element) {
+  if (!element) {
+    return;
+  }
+
+  window.requestAnimationFrame(() => {
+    element.focus();
+  });
+}
+
 function createDefaultState() {
   return {
     focus: { ...defaultState.focus },
@@ -372,6 +382,7 @@ function saveNoteFromInput(savedMessage = "Saved learning note.") {
   noteStatus.dataset.tone = "success";
   updateActionStates();
   renderNotes();
+  focusElement(noteInput);
   return true;
 }
 
@@ -396,6 +407,7 @@ function saveTaskFromInput(savedMessage = null) {
   taskStatus.dataset.tone = "success";
   updateActionStates();
   renderTasks();
+  focusElement(taskInput);
   return true;
 }
 
@@ -571,6 +583,7 @@ function renderTasks() {
       taskStatus.textContent = statusMessage;
       taskStatus.dataset.tone = "success";
       updateActionStates();
+      focusElement(taskInput);
     });
     discard.type = "button";
     discard.className = "ghost-button task-discard";
@@ -586,6 +599,7 @@ function renderTasks() {
       taskStatus.textContent = statusMessage;
       taskStatus.dataset.tone = "success";
       updateActionStates();
+      focusElement(taskInput);
     });
 
     actions.append(discard, remove);
@@ -684,6 +698,7 @@ function renderCompletedTasks() {
       taskStatus.textContent = statusMessage;
       taskStatus.dataset.tone = "success";
       updateActionStates();
+      focusElement(taskInput);
     });
 
     summary.className = "completed-task-summary";
@@ -746,6 +761,7 @@ function renderNotes() {
       noteStatus.textContent = statusMessage;
       noteStatus.dataset.tone = "success";
       updateActionStates();
+      focusElement(noteInput);
     });
 
     header.className = "note-meta";
@@ -810,6 +826,7 @@ clearFocus.addEventListener("click", () => {
   updateActionStates();
   focusStatus.textContent = statusMessage;
   focusStatus.dataset.tone = "success";
+  focusElement(focusInput);
 });
 
 taskForm.addEventListener("submit", (event) => {
@@ -846,6 +863,7 @@ clearCompleted.addEventListener("click", () => {
   taskStatus.textContent = statusMessage;
   taskStatus.dataset.tone = "success";
   updateActionStates();
+  focusElement(taskInput);
 });
 
 noteForm.addEventListener("submit", (event) => {
