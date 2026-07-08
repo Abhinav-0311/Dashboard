@@ -10,6 +10,7 @@ The first version includes:
 - A matching keyboard shortcut for saving learning notes with `Ctrl+Enter` or `Cmd+Enter`
 - A matching keyboard shortcut for adding backlog tasks with `Ctrl+Enter` or `Cmd+Enter`
 - A small task backlog
+- A confirmation step before removing a backlog task by mistake
 - A recent completed-task history so finished work stays visible, with a per-task restore action, a show-all toggle for older items, and a confirmation before clearing it
 - Learning notes saved in local storage, with confirmation before deleting a saved note
 - Empty states for cleared task and note lists

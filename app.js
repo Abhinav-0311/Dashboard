@@ -358,6 +358,12 @@ function getNoteDeleteConfirmationMessage(noteText) {
   return `Delete this learning note?\n\n"${preview}"`;
 }
 
+function getTaskDiscardConfirmationMessage(taskText) {
+  const preview = taskText.length > 60 ? `${taskText.slice(0, 57)}...` : taskText;
+
+  return `Remove this task from your backlog?\n\n"${preview}"`;
+}
+
 function saveNoteFromInput(savedMessage = "Saved learning note.") {
   const noteText = noteInput.value.trim();
   const validationMessage = getNoteValidationMessage(noteText);
@@ -590,6 +596,15 @@ function renderTasks() {
     discard.textContent = "Remove";
     discard.setAttribute("aria-label", `Remove task from backlog: ${task}`);
     discard.addEventListener("click", () => {
+      const confirmed = window.confirm(getTaskDiscardConfirmationMessage(task));
+
+      if (!confirmed) {
+        taskStatus.textContent = "Kept task in backlog.";
+        taskStatus.dataset.tone = "";
+        updateActionStates();
+        return;
+      }
+
       state.tasks.splice(index, 1);
       const statusMessage = getPersistenceMessage(
         `Removed task: ${task}`,
