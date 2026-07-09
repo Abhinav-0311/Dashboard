@@ -467,7 +467,7 @@ function scheduleDayBoundaryRefresh() {
 }
 
 function setRestoredDraftStatuses() {
-  if (typeof drafts.focus === "string" && drafts.focus.trim()) {
+  if (typeof drafts.focus === "string" && drafts.focus.trim() && !focusStatus.textContent) {
     focusStatus.textContent = "Restored unsaved focus draft from your browser.";
     focusStatus.dataset.tone = "";
   }
