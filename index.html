@@ -77,9 +77,10 @@
           </div>
           <form class="task-form" id="taskForm">
             <label class="sr-only" for="taskInput">Add a small task</label>
-            <input id="taskInput" type="text" placeholder="Add one small improvement" aria-describedby="taskStatus" aria-keyshortcuts="Control+Enter Meta+Enter" maxlength="120">
+            <input id="taskInput" type="text" placeholder="Add one small improvement" aria-describedby="taskHint taskStatus" aria-keyshortcuts="Control+Enter Meta+Enter" maxlength="120">
             <button id="addTask" type="submit">Add</button>
           </form>
+          <p class="field-hint" id="taskHint">Press Enter to add, or Ctrl+Enter (Windows/Linux) and Cmd+Enter (Mac).</p>
           <p class="field-status" id="taskStatus" role="status" aria-live="polite"></p>
           <ul class="task-list" id="taskList"></ul>
 
