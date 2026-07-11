@@ -467,17 +467,32 @@ function scheduleDayBoundaryRefresh() {
 }
 
 function setRestoredDraftStatuses() {
-  if (typeof drafts.focus === "string" && drafts.focus.trim() && !focusStatus.textContent) {
+  if (
+    typeof drafts.focus === "string" &&
+    drafts.focus.trim() &&
+    !focusStatus.textContent &&
+    !focusStatus.dataset.tone
+  ) {
     focusStatus.textContent = "Restored unsaved focus draft from your browser.";
     focusStatus.dataset.tone = "";
   }
 
-  if (typeof drafts.task === "string" && drafts.task.trim() && !taskStatus.textContent) {
+  if (
+    typeof drafts.task === "string" &&
+    drafts.task.trim() &&
+    !taskStatus.textContent &&
+    !taskStatus.dataset.tone
+  ) {
     taskStatus.textContent = "Restored unsaved task draft from your browser.";
     taskStatus.dataset.tone = "";
   }
 
-  if (typeof drafts.note === "string" && drafts.note.trim() && !noteStatus.textContent) {
+  if (
+    typeof drafts.note === "string" &&
+    drafts.note.trim() &&
+    !noteStatus.textContent &&
+    !noteStatus.dataset.tone
+  ) {
     noteStatus.textContent = "Restored unsaved learning note draft from your browser.";
     noteStatus.dataset.tone = "";
   }
@@ -900,6 +915,8 @@ focusInput.value = typeof drafts.focus === "string" ? drafts.focus : state.focus
 taskInput.value = typeof drafts.task === "string" ? drafts.task : "";
 noteInput.value = typeof drafts.note === "string" ? drafts.note : "";
 
+focusStatus.textContent = focusInput.value.trim() ? getFocusValidationMessage(focusInput.value.trim()) : "";
+focusStatus.dataset.tone = focusStatus.textContent ? "warning" : "";
 taskStatus.textContent = taskInput.value.trim() ? getTaskValidationMessage(taskInput.value.trim()) : "";
 taskStatus.dataset.tone = taskStatus.textContent ? "warning" : "";
 noteStatus.textContent = noteInput.value.trim() ? getNoteValidationMessage(noteInput.value.trim()) : "";
