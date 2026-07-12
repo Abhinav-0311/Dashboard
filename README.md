@@ -43,6 +43,10 @@ npm run validate
 
 The repository includes a GitHub Pages workflow. After Pages is configured to use GitHub Actions, every push to `main` publishes the static dashboard.
 
+## License
+
+MIT License. See [LICENSE](LICENSE).
+
 ## Daily contribution ideas
 
 Use this repo for small, real improvements:
