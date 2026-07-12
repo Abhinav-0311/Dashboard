@@ -2,6 +2,8 @@
 
 A small vanilla HTML, CSS, and JavaScript app for turning daily coding sessions into visible progress.
 
+Live site: https://abhinav-0311.github.io/Dashboard/
+
 The first version includes:
 
 - A daily focus prompt that resets each new day, even if the dashboard stays open overnight
@@ -36,6 +38,10 @@ Run the lightweight JavaScript syntax check before committing:
 ```bash
 npm run validate
 ```
+
+## Deploy
+
+The repository includes a GitHub Pages workflow. After Pages is configured to use GitHub Actions, every push to `main` publishes the static dashboard.
 
 ## Daily contribution ideas
 
