@@ -86,6 +86,19 @@ label {
   font-size: 0.85rem;
 }
 
+.hint-row {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.char-count {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
 .field-status {
   min-height: 1.4rem;
   margin: 8px 0 0;
@@ -527,6 +540,10 @@ h3 {
   .completed-meta {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .hint-row {
+    align-items: stretch;
   }
 
   .completed-task-actions {

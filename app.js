@@ -25,12 +25,14 @@ const streakMessage = document.querySelector("#streakMessage");
 const todayCompletedCount = document.querySelector("#todayCompletedCount");
 const totalNotesCount = document.querySelector("#totalNotesCount");
 const focusInput = document.querySelector("#focusInput");
+const focusCount = document.querySelector("#focusCount");
 const focusStatus = document.querySelector("#focusStatus");
 const saveFocus = document.querySelector("#saveFocus");
 const clearFocus = document.querySelector("#clearFocus");
 const taskForm = document.querySelector("#taskForm");
 const taskInput = document.querySelector("#taskInput");
 const addTask = document.querySelector("#addTask");
+const taskCountHint = document.querySelector("#taskCountHint");
 const taskStatus = document.querySelector("#taskStatus");
 const taskList = document.querySelector("#taskList");
 const taskCount = document.querySelector("#taskCount");
@@ -42,6 +44,7 @@ const toggleCompletedHistory = document.querySelector("#toggleCompletedHistory")
 const noteForm = document.querySelector("#noteForm");
 const noteInput = document.querySelector("#noteInput");
 const addNote = document.querySelector("#addNote");
+const noteCount = document.querySelector("#noteCount");
 const noteStatus = document.querySelector("#noteStatus");
 const notesList = document.querySelector("#notesList");
 const drafts = loadDrafts();
@@ -299,6 +302,23 @@ function updateActionStates() {
   clearCompleted.disabled = state.completedTasks.length === 0;
 }
 
+function updateCharacterCount(element, counter, maxLength) {
+  if (!element || !counter) {
+    return;
+  }
+
+  const remaining = Math.max(maxLength - element.value.length, 0);
+  const label = remaining === 1 ? "character" : "characters";
+
+  counter.textContent = `${remaining} ${label} left`;
+}
+
+function updateCharacterCounts() {
+  updateCharacterCount(focusInput, focusCount, 180);
+  updateCharacterCount(taskInput, taskCountHint, 120);
+  updateCharacterCount(noteInput, noteCount, 280);
+}
+
 function getFocusValidationMessage(focusText) {
   if (!focusText) {
     return "Add a focus before saving.";
@@ -381,6 +401,7 @@ function saveNoteFromInput(savedMessage = "Saved learning note.") {
   });
   noteInput.value = "";
   saveDraft("note", "");
+  updateCharacterCounts();
   noteStatus.textContent = getPersistenceMessage(
     savedMessage,
     "Saved learning note for this session only because browser storage is unavailable."
@@ -406,6 +427,7 @@ function saveTaskFromInput(savedMessage = null) {
   state.tasks.unshift(nextTask);
   taskInput.value = "";
   saveDraft("task", "");
+  updateCharacterCounts();
   taskStatus.textContent = getPersistenceMessage(
     savedMessage ?? `Added task: ${nextTask}`,
     `Added task for this session only: ${nextTask}`
@@ -449,6 +471,7 @@ function syncDayBoundary() {
 function handleDayChange() {
   setDate();
   syncDayBoundary();
+  updateCharacterCounts();
   updateActionStates();
 }
 
@@ -814,6 +837,7 @@ focusInput.addEventListener("input", () => {
   saveDraft("focus", focusInput.value);
   focusStatus.textContent = focusInput.value.trim() ? getFocusValidationMessage(focusInput.value.trim()) : "";
   focusStatus.dataset.tone = focusStatus.textContent ? "warning" : "";
+  updateCharacterCounts();
   updateActionStates();
 });
 
@@ -821,6 +845,7 @@ taskInput.addEventListener("input", () => {
   saveDraft("task", taskInput.value);
   taskStatus.textContent = taskInput.value.trim() ? getTaskValidationMessage(taskInput.value.trim()) : "";
   taskStatus.dataset.tone = taskStatus.textContent ? "warning" : "";
+  updateCharacterCounts();
   updateActionStates();
 });
 
@@ -835,6 +860,7 @@ noteInput.addEventListener("input", () => {
   saveDraft("note", noteInput.value);
   noteStatus.textContent = noteInput.value.trim() ? getNoteValidationMessage(noteInput.value.trim()) : "";
   noteStatus.dataset.tone = noteStatus.textContent ? "warning" : "";
+  updateCharacterCounts();
   updateActionStates();
 });
 
@@ -849,6 +875,7 @@ clearFocus.addEventListener("click", () => {
   state.focus = { ...defaultState.focus };
   focusInput.value = "";
   saveDraft("focus", "");
+  updateCharacterCounts();
   const statusMessage = getPersistenceMessage(
     "Focus cleared.",
     "Focus cleared for this session only because browser storage is unavailable."
@@ -922,6 +949,7 @@ taskStatus.dataset.tone = taskStatus.textContent ? "warning" : "";
 noteStatus.textContent = noteInput.value.trim() ? getNoteValidationMessage(noteInput.value.trim()) : "";
 noteStatus.dataset.tone = noteStatus.textContent ? "warning" : "";
 setRestoredDraftStatuses();
+updateCharacterCounts();
 updateActionStates();
 renderTasks();
 renderCompletedTasks();

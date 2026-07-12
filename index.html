@@ -60,7 +60,10 @@
           </div>
           <label for="focusInput">What will you ship today?</label>
           <textarea id="focusInput" rows="4" placeholder="Example: Add keyboard support to task cards" aria-describedby="focusHint focusStatus" aria-keyshortcuts="Control+Enter Meta+Enter" maxlength="180"></textarea>
-          <p class="field-hint" id="focusHint">Press Ctrl+Enter (Windows/Linux) or Cmd+Enter (Mac) to save quickly.</p>
+          <p class="field-hint hint-row" id="focusHint">
+            <span>Press Ctrl+Enter (Windows/Linux) or Cmd+Enter (Mac) to save quickly.</span>
+            <span class="char-count" id="focusCount" aria-live="polite">180 characters left</span>
+          </p>
           <div class="focus-actions">
             <button id="saveFocus" type="button">Save focus</button>
             <p class="field-status" id="focusStatus" role="status" aria-live="polite"></p>
@@ -80,7 +83,10 @@
             <input id="taskInput" type="text" placeholder="Add one small improvement" aria-describedby="taskHint taskStatus" aria-keyshortcuts="Control+Enter Meta+Enter" maxlength="120">
             <button id="addTask" type="submit">Add</button>
           </form>
-          <p class="field-hint" id="taskHint">Press Enter to add, or Ctrl+Enter (Windows/Linux) and Cmd+Enter (Mac).</p>
+          <p class="field-hint hint-row" id="taskHint">
+            <span>Press Enter to add, or Ctrl+Enter (Windows/Linux) and Cmd+Enter (Mac).</span>
+            <span class="char-count" id="taskCountHint" aria-live="polite">120 characters left</span>
+          </p>
           <p class="field-status" id="taskStatus" role="status" aria-live="polite"></p>
           <ul class="task-list" id="taskList"></ul>
 
@@ -110,8 +116,11 @@
           </div>
           <form id="noteForm">
             <label for="noteInput">What did you learn or change?</label>
-            <textarea id="noteInput" rows="5" placeholder="Example: Used aria-live for save feedback" aria-describedby="noteStatus" aria-keyshortcuts="Control+Enter Meta+Enter" maxlength="280"></textarea>
-            <p class="field-hint">Press Ctrl+Enter (Windows/Linux) or Cmd+Enter (Mac) to save quickly.</p>
+            <textarea id="noteInput" rows="5" placeholder="Example: Used aria-live for save feedback" aria-describedby="noteHint noteStatus" aria-keyshortcuts="Control+Enter Meta+Enter" maxlength="280"></textarea>
+            <p class="field-hint hint-row" id="noteHint">
+              <span>Press Ctrl+Enter (Windows/Linux) or Cmd+Enter (Mac) to save quickly.</span>
+              <span class="char-count" id="noteCount" aria-live="polite">280 characters left</span>
+            </p>
             <button id="addNote" type="submit">Add note</button>
           </form>
           <p class="field-status" id="noteStatus" role="status" aria-live="polite"></p>
