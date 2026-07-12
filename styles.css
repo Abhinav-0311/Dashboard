@@ -496,6 +496,42 @@ h3 {
   background: linear-gradient(180deg, #ffffff 0%, #eef7f2 100%);
 }
 
+.panel-copy {
+  margin: 10px 0 16px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.data-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.file-button {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: #edf2ef;
+  color: var(--ink);
+  cursor: pointer;
+  font-weight: 700;
+  margin: 0;
+  padding: 0 16px;
+}
+
+.file-button:hover {
+  background: #dfe9e3;
+}
+
+.file-button:focus-within,
+.file-button:focus-visible {
+  outline: 3px solid rgba(15, 76, 92, 0.38);
+  outline-offset: 2px;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -552,6 +588,8 @@ h3 {
 
   .focus-actions button,
   .task-form button,
+  .data-actions button,
+  .file-button,
   .ghost-button,
   .note-remove,
   .completed-meta .count {

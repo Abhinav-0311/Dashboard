@@ -137,6 +137,18 @@
             <li>Week 4: Polish, deploy, and write a strong README.</li>
           </ul>
         </aside>
+
+        <aside class="panel data-panel">
+          <p class="section-kicker">Backup</p>
+          <h2>Data portability</h2>
+          <p class="panel-copy">Export your local dashboard data or restore it from a previous backup.</p>
+          <div class="data-actions">
+            <button id="exportData" type="button">Export data</button>
+            <label class="file-button" for="importData">Import data</label>
+            <input class="sr-only" id="importData" type="file" accept="application/json,.json">
+          </div>
+          <p class="field-status" id="dataStatus" role="status" aria-live="polite"></p>
+        </aside>
       </section>
     </main>
 

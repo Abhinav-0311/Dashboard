@@ -14,6 +14,7 @@ The first version includes:
 - A confirmation step before removing a backlog task by mistake
 - A recent completed-task history so finished work stays visible, with a per-task restore action, a show-all toggle for older items, and a confirmation before clearing it
 - Learning notes saved in local storage, with confirmation before deleting a saved note
+- JSON export and import controls for moving local dashboard data between browsers or machines
 - Empty states for cleared task and note lists
 - A 30-day improvement roadmap
 
@@ -22,6 +23,11 @@ The first version includes:
 Open `index.html` in your browser.
 
 No build step or dependencies are required.
+
+## Back up your data
+
+Use **Export data** to download a JSON backup of your saved focus, backlog, completed tasks, and learning notes.
+Use **Import data** to restore a previous dashboard backup. Importing replaces the current browser's saved dashboard data after confirmation.
 
 ## Validate changes
 
