@@ -47,6 +47,9 @@ const addNote = document.querySelector("#addNote");
 const noteCount = document.querySelector("#noteCount");
 const noteStatus = document.querySelector("#noteStatus");
 const notesList = document.querySelector("#notesList");
+const exportData = document.querySelector("#exportData");
+const importData = document.querySelector("#importData");
+const dataStatus = document.querySelector("#dataStatus");
 const drafts = loadDrafts();
 let showAllCompletedTasks = false;
 
@@ -240,6 +243,22 @@ function normalizeCompletedTasks(completedTasks) {
   });
 }
 
+function normalizeImportedState(value) {
+  if (!value || typeof value !== "object") {
+    return null;
+  }
+
+  const importedState = value.state && typeof value.state === "object" ? value.state : value;
+
+  return {
+    ...createDefaultState(),
+    focus: normalizeFocus(importedState.focus),
+    tasks: normalizeTasks(importedState.tasks),
+    completedTasks: normalizeCompletedTasks(importedState.completedTasks),
+    notes: normalizeNotes(importedState.notes)
+  };
+}
+
 function saveState() {
   try {
     localStorage.setItem(storageKey, JSON.stringify(state));
@@ -263,6 +282,15 @@ function showStorageBanner(message) {
 function hideStorageBanner() {
   storageBanner.hidden = true;
   storageBanner.textContent = "";
+}
+
+function refreshDashboard() {
+  updateCharacterCounts();
+  updateActionStates();
+  renderTasks();
+  renderCompletedTasks();
+  renderNotes();
+  renderStats();
 }
 
 function saveFocusText(savedMessage = "Saved for today.") {
@@ -824,6 +852,83 @@ function renderNotes() {
   });
 }
 
+function getExportPayload() {
+  return {
+    app: "daily-dev-dashboard",
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    state
+  };
+}
+
+function exportDashboardData() {
+  const payload = JSON.stringify(getExportPayload(), null, 2);
+  const blob = new Blob([payload], { type: "application/json" });
+  const link = document.createElement("a");
+  const todayKey = getTodayKey();
+
+  link.href = URL.createObjectURL(blob);
+  link.download = `daily-dev-dashboard-${todayKey}.json`;
+  link.click();
+  URL.revokeObjectURL(link.href);
+  dataStatus.textContent = "Exported dashboard data.";
+  dataStatus.dataset.tone = "success";
+}
+
+function importDashboardData(file) {
+  if (!file) {
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.addEventListener("load", () => {
+    try {
+      const parsed = JSON.parse(String(reader.result));
+      const importedState = normalizeImportedState(parsed);
+
+      if (!importedState) {
+        throw new Error("Invalid dashboard backup.");
+      }
+
+      const confirmed = window.confirm("Replace your current dashboard data with this backup?");
+
+      if (!confirmed) {
+        dataStatus.textContent = "Import cancelled.";
+        dataStatus.dataset.tone = "";
+        return;
+      }
+
+      Object.assign(state, importedState);
+      focusInput.value = state.focus.text;
+      taskInput.value = "";
+      noteInput.value = "";
+      saveDraft("focus", "");
+      saveDraft("task", "");
+      saveDraft("note", "");
+      dataStatus.textContent = getPersistenceMessage(
+        "Imported dashboard data.",
+        "Imported dashboard data for this session only because browser storage is unavailable."
+      );
+      dataStatus.dataset.tone = "success";
+      refreshDashboard();
+    } catch {
+      dataStatus.textContent = "Choose a valid dashboard JSON backup.";
+      dataStatus.dataset.tone = "warning";
+    } finally {
+      importData.value = "";
+    }
+  });
+
+  reader.addEventListener("error", () => {
+    dataStatus.textContent = "Could not read that backup file.";
+    dataStatus.dataset.tone = "warning";
+    importData.value = "";
+  });
+
+  reader.readAsText(file);
+}
+
 saveFocus.addEventListener("click", saveFocusText);
 
 focusInput.addEventListener("keydown", (event) => {
@@ -937,6 +1042,12 @@ toggleCompletedHistory.addEventListener("click", () => {
   renderCompletedTasks();
 });
 
+exportData.addEventListener("click", exportDashboardData);
+
+importData.addEventListener("change", () => {
+  importDashboardData(importData.files[0]);
+});
+
 handleDayChange();
 focusInput.value = typeof drafts.focus === "string" ? drafts.focus : state.focus.text;
 taskInput.value = typeof drafts.task === "string" ? drafts.task : "";
@@ -949,12 +1060,7 @@ taskStatus.dataset.tone = taskStatus.textContent ? "warning" : "";
 noteStatus.textContent = noteInput.value.trim() ? getNoteValidationMessage(noteInput.value.trim()) : "";
 noteStatus.dataset.tone = noteStatus.textContent ? "warning" : "";
 setRestoredDraftStatuses();
-updateCharacterCounts();
-updateActionStates();
-renderTasks();
-renderCompletedTasks();
-renderNotes();
-renderStats();
+refreshDashboard();
 scheduleDayBoundaryRefresh();
 
 window.addEventListener("focus", () => {
