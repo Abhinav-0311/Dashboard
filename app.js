@@ -175,11 +175,7 @@ function loadState() {
       notes: normalizeNotes(parsed.notes)
     };
 
-    if (nextState.focus.savedOn !== getTodayKey()) {
-      nextState.focus = { ...defaultState.focus };
-    }
-
-    return nextState;
+    return resetStaleFocus(nextState);
   } catch {
     return createDefaultState();
   }
@@ -250,12 +246,23 @@ function normalizeImportedState(value) {
 
   const importedState = value.state && typeof value.state === "object" ? value.state : value;
 
-  return {
+  return resetStaleFocus({
     ...createDefaultState(),
     focus: normalizeFocus(importedState.focus),
     tasks: normalizeTasks(importedState.tasks),
     completedTasks: normalizeCompletedTasks(importedState.completedTasks),
     notes: normalizeNotes(importedState.notes)
+  });
+}
+
+function resetStaleFocus(nextState) {
+  if (nextState.focus.savedOn === getTodayKey()) {
+    return nextState;
+  }
+
+  return {
+    ...nextState,
+    focus: { ...defaultState.focus }
   };
 }
 
