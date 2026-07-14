@@ -244,6 +244,14 @@ function normalizeImportedState(value) {
     return null;
   }
 
+  if ("app" in value && value.app !== "daily-dev-dashboard") {
+    return null;
+  }
+
+  if ("version" in value && !Number.isInteger(value.version)) {
+    return null;
+  }
+
   const importedState = value.state && typeof value.state === "object" ? value.state : value;
 
   return resetStaleFocus({
