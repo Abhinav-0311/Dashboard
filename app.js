@@ -884,8 +884,13 @@ function exportDashboardData() {
 
   link.href = URL.createObjectURL(blob);
   link.download = `daily-dev-dashboard-${todayKey}.json`;
+  link.style.display = "none";
+  document.body.append(link);
   link.click();
-  URL.revokeObjectURL(link.href);
+  window.setTimeout(() => {
+    URL.revokeObjectURL(link.href);
+    link.remove();
+  }, 0);
   dataStatus.textContent = "Exported dashboard data.";
   dataStatus.dataset.tone = "success";
 }
