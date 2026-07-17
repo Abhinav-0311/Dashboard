@@ -239,20 +239,42 @@ function normalizeCompletedTasks(completedTasks) {
   });
 }
 
+function hasDashboardStateShape(value) {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const dashboardKeys = ["focus", "tasks", "completedTasks", "notes"];
+
+  return dashboardKeys.some((key) => key in value);
+}
+
 function normalizeImportedState(value) {
   if (!value || typeof value !== "object") {
     return null;
   }
 
-  if ("app" in value && value.app !== "daily-dev-dashboard") {
+  const hasMetadata = "app" in value || "version" in value || "state" in value;
+
+  if (hasMetadata) {
+    if (value.app !== "daily-dev-dashboard") {
+      return null;
+    }
+
+    if (!Number.isInteger(value.version) || value.version !== 1) {
+      return null;
+    }
+
+    if (!hasDashboardStateShape(value.state)) {
+      return null;
+    }
+  }
+
+  if (!hasMetadata && !hasDashboardStateShape(value)) {
     return null;
   }
 
-  if ("version" in value && !Number.isInteger(value.version)) {
-    return null;
-  }
-
-  const importedState = value.state && typeof value.state === "object" ? value.state : value;
+  const importedState = hasMetadata ? value.state : value;
 
   return resetStaleFocus({
     ...createDefaultState(),
