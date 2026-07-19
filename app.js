@@ -538,6 +538,7 @@ function handleDayChange() {
   syncDayBoundary();
   updateCharacterCounts();
   updateActionStates();
+  renderStats();
 }
 
 function scheduleDayBoundaryRefresh() {
