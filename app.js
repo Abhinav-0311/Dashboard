@@ -1,5 +1,6 @@
 const storageKey = "daily-dev-dashboard";
 const draftStorageKey = "daily-dev-dashboard:drafts";
+const maxImportSize = 1024 * 1024;
 
 const defaultState = {
   focus: {
@@ -920,6 +921,13 @@ function exportDashboardData() {
 
 function importDashboardData(file) {
   if (!file) {
+    return;
+  }
+
+  if (file.size > maxImportSize) {
+    dataStatus.textContent = "Choose a dashboard backup smaller than 1 MB.";
+    dataStatus.dataset.tone = "warning";
+    importData.value = "";
     return;
   }
 
