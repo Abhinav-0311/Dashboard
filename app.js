@@ -1028,6 +1028,15 @@ noteInput.addEventListener("keydown", (event) => {
 });
 
 clearFocus.addEventListener("click", () => {
+  const confirmed = window.confirm("Clear today's focus and any unsaved focus draft?");
+
+  if (!confirmed) {
+    focusStatus.textContent = "Kept today's focus.";
+    focusStatus.dataset.tone = "";
+    focusElement(focusInput);
+    return;
+  }
+
   state.focus = { ...defaultState.focus };
   focusInput.value = "";
   saveDraft("focus", "");

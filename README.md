@@ -7,6 +7,7 @@ Live site: https://abhinav-0311.github.io/Dashboard/
 The first version includes:
 
 - A daily focus prompt that resets each new day, even if the dashboard stays open overnight
+- A confirmation step before clearing today's focus or its unsaved draft
 - Unsaved focus, task, and note drafts restored after reopening the browser
 - A keyboard shortcut for saving focus with `Ctrl+Enter` or `Cmd+Enter`
 - A matching keyboard shortcut for saving learning notes with `Ctrl+Enter` or `Cmd+Enter`
