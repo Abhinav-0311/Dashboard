@@ -83,11 +83,17 @@ function loadDrafts() {
 
     const parsedDrafts = JSON.parse(savedDrafts);
 
-    if (!parsedDrafts || typeof parsedDrafts !== "object") {
+    if (!parsedDrafts || typeof parsedDrafts !== "object" || Array.isArray(parsedDrafts)) {
       return {};
     }
 
-    return parsedDrafts;
+    return ["focus", "task", "note"].reduce((validDrafts, field) => {
+      if (typeof parsedDrafts[field] === "string" && parsedDrafts[field].length > 0) {
+        validDrafts[field] = parsedDrafts[field];
+      }
+
+      return validDrafts;
+    }, {});
   } catch {
     return {};
   }
