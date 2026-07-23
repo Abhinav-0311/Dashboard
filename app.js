@@ -1,6 +1,9 @@
 const storageKey = "daily-dev-dashboard";
 const draftStorageKey = "daily-dev-dashboard:drafts";
 const maxImportSize = 1024 * 1024;
+const maxFocusLength = 180;
+const maxTaskLength = 120;
+const maxNoteLength = 280;
 
 const defaultState = {
   focus: {
@@ -191,7 +194,7 @@ function loadState() {
 function normalizeFocus(focus) {
   if (typeof focus === "string") {
     return {
-      text: focus,
+      text: focus.length <= maxFocusLength ? focus : "",
       savedOn: getTodayKey()
     };
   }
@@ -201,7 +204,7 @@ function normalizeFocus(focus) {
   }
 
   return {
-    text: typeof focus.text === "string" ? focus.text : "",
+    text: typeof focus.text === "string" && focus.text.length <= maxFocusLength ? focus.text : "",
     savedOn: typeof focus.savedOn === "string" ? focus.savedOn : ""
   };
 }
@@ -211,7 +214,9 @@ function normalizeTasks(tasks) {
     return [...defaultState.tasks];
   }
 
-  return tasks.filter((task) => typeof task === "string" && task.trim().length > 0);
+  return tasks.filter(
+    (task) => typeof task === "string" && task.trim().length > 0 && task.length <= maxTaskLength
+  );
 }
 
 function normalizeNotes(notes) {
@@ -225,6 +230,7 @@ function normalizeNotes(notes) {
       typeof note === "object" &&
       typeof note.text === "string" &&
       note.text.trim().length > 0 &&
+      note.text.length <= maxNoteLength &&
       isValidDateString(note.createdAt)
     );
   });
@@ -241,6 +247,7 @@ function normalizeCompletedTasks(completedTasks) {
       typeof task === "object" &&
       typeof task.text === "string" &&
       task.text.trim().length > 0 &&
+      task.text.length <= maxTaskLength &&
       isValidDateString(task.completedAt)
     );
   });
@@ -386,9 +393,9 @@ function updateCharacterCount(element, counter, maxLength) {
 }
 
 function updateCharacterCounts() {
-  updateCharacterCount(focusInput, focusCount, 180);
-  updateCharacterCount(taskInput, taskCountHint, 120);
-  updateCharacterCount(noteInput, noteCount, 280);
+  updateCharacterCount(focusInput, focusCount, maxFocusLength);
+  updateCharacterCount(taskInput, taskCountHint, maxTaskLength);
+  updateCharacterCount(noteInput, noteCount, maxNoteLength);
 }
 
 function getFocusValidationMessage(focusText) {
@@ -396,7 +403,7 @@ function getFocusValidationMessage(focusText) {
     return "Add a focus before saving.";
   }
 
-  if (focusText.length > 180) {
+  if (focusText.length > maxFocusLength) {
     return "Keep today's focus under 180 characters so it stays easy to scan.";
   }
 
@@ -414,7 +421,7 @@ function getTaskValidationMessage(taskText) {
     return "Add a small task before submitting.";
   }
 
-  if (taskText.length > 120) {
+  if (taskText.length > maxTaskLength) {
     return "Keep backlog items under 120 characters so they stay scannable.";
   }
 
@@ -430,7 +437,7 @@ function getNoteValidationMessage(noteText) {
     return "Add one short learning note before submitting.";
   }
 
-  if (noteText.length > 280) {
+  if (noteText.length > maxNoteLength) {
     return "Keep learning notes under 280 characters so they stay easy to scan later.";
   }
 

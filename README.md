@@ -30,7 +30,7 @@ No build step or dependencies are required.
 ## Back up your data
 
 Use **Export data** to download a JSON backup of your saved focus, backlog, completed tasks, and learning notes.
-Use **Import data** to restore a previous dashboard backup. Importing replaces the current browser's saved dashboard data after confirmation, and the app rejects files larger than 1 MB or JSON files that are not labeled as Daily Dev Dashboard backups.
+Use **Import data** to restore a previous dashboard backup. Importing replaces the current browser's saved dashboard data after confirmation, and the app rejects files larger than 1 MB, JSON files that are not labeled as Daily Dev Dashboard backups, and entries that exceed the dashboard's text limits.
 
 ## Validate changes
 
