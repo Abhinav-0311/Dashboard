@@ -4,6 +4,11 @@ const maxImportSize = 1024 * 1024;
 const maxFocusLength = 180;
 const maxTaskLength = 120;
 const maxNoteLength = 280;
+const draftMaxLengths = {
+  focus: maxFocusLength,
+  task: maxTaskLength,
+  note: maxNoteLength
+};
 
 const defaultState = {
   focus: {
@@ -90,8 +95,12 @@ function loadDrafts() {
       return {};
     }
 
-    return ["focus", "task", "note"].reduce((validDrafts, field) => {
-      if (typeof parsedDrafts[field] === "string" && parsedDrafts[field].length > 0) {
+    return Object.entries(draftMaxLengths).reduce((validDrafts, [field, maxLength]) => {
+      if (
+        typeof parsedDrafts[field] === "string" &&
+        parsedDrafts[field].length > 0 &&
+        parsedDrafts[field].length <= maxLength
+      ) {
         validDrafts[field] = parsedDrafts[field];
       }
 
