@@ -98,7 +98,7 @@ function loadDrafts() {
     return Object.entries(draftMaxLengths).reduce((validDrafts, [field, maxLength]) => {
       if (
         typeof parsedDrafts[field] === "string" &&
-        parsedDrafts[field].length > 0 &&
+        parsedDrafts[field].trim().length > 0 &&
         parsedDrafts[field].length <= maxLength
       ) {
         validDrafts[field] = parsedDrafts[field];
