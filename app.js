@@ -220,7 +220,7 @@ function normalizeFocus(focus) {
 
 function normalizeTasks(tasks) {
   if (!Array.isArray(tasks)) {
-    return [...defaultState.tasks];
+    return [];
   }
 
   return tasks.filter(
