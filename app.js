@@ -946,8 +946,15 @@ function importDashboardData(file) {
     return;
   }
 
+  if (file.size === 0) {
+    dataStatus.textContent = "Choose a non-empty dashboard backup.";
+    dataStatus.dataset.tone = "warning";
+    importData.value = "";
+    return;
+  }
+
   if (file.size > maxImportSize) {
-    dataStatus.textContent = "Choose a dashboard backup smaller than 1 MB.";
+    dataStatus.textContent = "Choose a dashboard backup that is 1 MB or smaller.";
     dataStatus.dataset.tone = "warning";
     importData.value = "";
     return;
