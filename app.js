@@ -30,6 +30,7 @@ const weekday = document.querySelector("#weekday");
 const dateLabel = document.querySelector("#dateLabel");
 const storageBanner = document.querySelector("#storageBanner");
 const streakCount = document.querySelector("#streakCount");
+const streakUnit = document.querySelector("#streakUnit");
 const streakMessage = document.querySelector("#streakMessage");
 const todayCompletedCount = document.querySelector("#todayCompletedCount");
 const totalNotesCount = document.querySelector("#totalNotesCount");
@@ -661,6 +662,7 @@ function renderStats() {
   streakCount.textContent = String(streak);
   todayCompletedCount.textContent = String(completedToday);
   totalNotesCount.textContent = String(state.notes.length);
+  streakUnit.textContent = streak === 1 ? "day" : "days";
 
   if (streak === 0) {
     streakMessage.textContent = "Complete one task today to start a streak.";
