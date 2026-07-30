@@ -982,6 +982,7 @@ function importDashboardData(file) {
       }
 
       Object.assign(state, importedState);
+      showAllCompletedTasks = false;
       focusInput.value = state.focus.text;
       taskInput.value = "";
       noteInput.value = "";
