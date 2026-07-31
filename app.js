@@ -224,9 +224,22 @@ function normalizeTasks(tasks) {
     return [];
   }
 
-  return tasks.filter(
-    (task) => typeof task === "string" && task.trim().length > 0 && task.length <= maxTaskLength
-  );
+  const seenTasks = new Set();
+
+  return tasks.filter((task) => {
+    if (typeof task !== "string" || task.trim().length === 0 || task.length > maxTaskLength) {
+      return false;
+    }
+
+    const comparableTask = normalizeComparableText(task);
+
+    if (seenTasks.has(comparableTask)) {
+      return false;
+    }
+
+    seenTasks.add(comparableTask);
+    return true;
+  });
 }
 
 function normalizeNotes(notes) {
