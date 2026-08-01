@@ -31,7 +31,7 @@ No build step or dependencies are required.
 
 Use **Export data** to download a JSON backup of your saved focus, backlog, completed tasks, and learning notes.
 Use **Import data** to restore a previous dashboard backup. Importing replaces the current browser's saved dashboard data after confirmation, and the app rejects empty files, files larger than 1 MB, JSON files that are not labeled as Daily Dev Dashboard backups, and entries that exceed the dashboard's text limits.
-Duplicate backlog tasks in saved or imported data are collapsed using the same case- and spacing-insensitive comparison as the task form.
+Duplicate backlog tasks and learning notes in saved or imported data are collapsed using the same case- and spacing-insensitive comparison as their forms.
 Legacy backups without a task list restore an empty backlog instead of adding the starter tasks shown on a new dashboard.
 
 ## Validate changes

@@ -247,8 +247,10 @@ function normalizeNotes(notes) {
     return [];
   }
 
+  const seenNotes = new Set();
+
   return notes.filter((note) => {
-    return (
+    const isValidNote = (
       note &&
       typeof note === "object" &&
       typeof note.text === "string" &&
@@ -256,6 +258,19 @@ function normalizeNotes(notes) {
       note.text.length <= maxNoteLength &&
       isValidDateString(note.createdAt)
     );
+
+    if (!isValidNote) {
+      return false;
+    }
+
+    const comparableNote = normalizeComparableText(note.text);
+
+    if (seenNotes.has(comparableNote)) {
+      return false;
+    }
+
+    seenNotes.add(comparableNote);
+    return true;
   });
 }
 
