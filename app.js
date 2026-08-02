@@ -288,6 +288,8 @@ function normalizeCompletedTasks(completedTasks) {
       task.text.length <= maxTaskLength &&
       isValidDateString(task.completedAt)
     );
+  }).sort((firstTask, secondTask) => {
+    return new Date(secondTask.completedAt).getTime() - new Date(firstTask.completedAt).getTime();
   });
 }
 
