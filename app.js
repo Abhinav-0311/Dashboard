@@ -271,6 +271,8 @@ function normalizeNotes(notes) {
 
     seenNotes.add(comparableNote);
     return true;
+  }).sort((firstNote, secondNote) => {
+    return new Date(firstNote.createdAt).getTime() - new Date(secondNote.createdAt).getTime();
   });
 }
 
