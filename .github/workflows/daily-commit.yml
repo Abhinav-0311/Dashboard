@@ -1,0 +1,28 @@
+name: Daily Activity
+
+on:
+  schedule:
+    - cron: "0 9 * * *" # Runs every day at 09:00 UTC
+  workflow_dispatch: # Allows you to run it manually from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Make a small change
+        run: |
+          echo "Activity logged on $(date)" >> .activity.log
+
+      - name: Commit and push
+        run: |
+          git config --global user.name "Abhinav"
+          git config --global user.email "abhinav.ajay03@gmail.com"
+          git add .activity.log
+          git commit -m "chore: Daily activity update"
+          git push origin main
